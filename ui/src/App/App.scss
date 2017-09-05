@@ -1,24 +1,15 @@
-.App {
-  text-align: center;
+
+html {
+  height: 100%;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+body {
+  min-height: 100%;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
-}
+$multipliers: 5;
 
-.App-intro {
-  font-size: large;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+@for $i from 1 through $multipliers {
+  .margin-top-#{$i*4} { margin-top: $i * 4px; }
+  .pad-#{$i*4} { padding: $i * 4px; }
 }
