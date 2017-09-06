@@ -1,0 +1,27 @@
+version: "2.1"
+services:
+  backend:
+    environment:
+      - NODE_ENV=production
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+    image: nd-backend
+    restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+  ui:
+    image: nd-ui
+    restart: always
+    ports:
+      - 5000:5000
+    depends_on:
+      - backend
+  postgres:
+    environment:
+      - POSTGRES_DB=governance_prod
+      - POSTGRES_USER=postgres
+    image: postgres:9.6
+    ports:
+      - 5432:5432
