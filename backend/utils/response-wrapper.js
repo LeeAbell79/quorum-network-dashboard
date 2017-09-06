@@ -1,22 +1,32 @@
 const moment = require("moment");
 
-// TODO: use JSON instead
+responseWrapper = {
 
+  serverError: function () {
+    return {
+      errors: [
+        {
+          title: 'unexpected server error',
+          status: '500',
+          meta: {
+            timestamp: +moment()
+          }
+        }
+      ]
+    }
+  },
 
+  success: function (data) {
+    return {
+      data: data,
+    }
+  },
 
-/**
- * Wrap the text message to the response object
- * @param body: (string|object), response body
- * @param success: boolean, if the request was processed successfully
- * @param serverError: boolean, if the unexpected server error occurred
- * @returns {{body: string|object, success: boolean}}
- */
-function responseWrapper (body, success, serverError = false) {
-  body = serverError ? `unexpected server error at ${+moment()}` : body;
-  return {
-    body: body,
-    success: success,
+  error: function(error) {
+    return {
+      error: error
+    }
   }
-}
+};
 
 module.exports = responseWrapper;

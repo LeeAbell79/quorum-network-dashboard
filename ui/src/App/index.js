@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Header from '../components/Header';
 import {routes as scenes} from '../routes';
 
-import './app.css';
+import './App.css';
 import 'normalize.css/normalize.css';
 import '@blueprintjs/core/dist/blueprint.css';
 import 'bootstrap/dist/css/bootstrap.css';

@@ -2,8 +2,9 @@
   "development": {
     "username": "postgres",
     "password": "",
-    "database": "governance",
+    "database": "governance_dev",
     "host": "localhost",
+    "port": "5435",
     "dialect": "postgres"
   },
   "test": {
@@ -17,7 +18,7 @@
     "username": "postgres",
     "password": "",
     "database": "governance_prod",
-    "host": "127.0.0.1",
+    "host": "postgres",
     "dialect": "postgres"
   }
 }
