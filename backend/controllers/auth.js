@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const moment = require('moment');
 
-const jwtConfig = require('../config/app.config');
+const appConfig = require('../config/app.config');
 const jwtHandler = require('../middlewares/jwt-handler.js');
 const models = require('../models');
 const responseWrapper = require('../utils/response-wrapper');
@@ -49,12 +49,12 @@ module.exports = {
               }
 
               res.cookie(
-                jwtConfig.authCookieName,
+                appConfig.authCookieName,
                 tokenData.token,
                 {
-                  domain: jwtConfig.authCookieDomain,
+                  domain: appConfig.authCookieDomain,
                   httpOnly: true,
-                  secure: jwtConfig.authCookieSecure,
+                  secure: appConfig.authCookieSecure,
                   expire: moment(tokenData.expireDate).toDate()
                 }
               );
@@ -171,7 +171,7 @@ module.exports = {
   },
 
   logout: function (req, res) {
-    res.clearCookie(jwtConfig.authCookieName);
+    res.clearCookie(appConfig.authCookieName);
     res.status(200).json({
       message: 'Logout successful'
     });
