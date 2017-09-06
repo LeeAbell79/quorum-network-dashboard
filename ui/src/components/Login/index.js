@@ -24,8 +24,8 @@ class Login extends Component {
   }
 
   login = (values) => {
-    if(values.username && values.password) {
-      this.props.userLoginSubmit(values.username, values.password);
+    if(values.email && values.password) {
+      this.props.userLoginSubmit(values.email, values.password);
     }
   }
 
@@ -47,10 +47,10 @@ class Login extends Component {
                 <div className="row pad-4">
                   <div className="col-sm-12">
                     <Field
-                      name="username"
+                      name="email"
                       component="input"
                       type="text"
-                      placeholder="Username"
+                      placeholder="Email"
                       className="pt-input pt-fill"
                       required
                     />

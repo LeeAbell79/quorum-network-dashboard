@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const moment = require('moment');
 
-const jwtConfig = require('../config/jwt.config');
+const jwtConfig = require('../config/app.config');
 const jwtHandler = require('../middlewares/jwt-handler.js');
 const models = require('../models');
 const responseWrapper = require('../utils/response-wrapper');
@@ -14,35 +14,57 @@ module.exports = {
 
 
   // Login can be executed by logged-in users and re-logins with new credentials provided
-  login: function (req, res) {
-    const username = req.body.username;
+  login: function (req, res, next) {
+    const email = req.body.email;
     const password = req.body.password;
 
     // Check if password provided for the user is correct
-    models.User.findOne({where: {username: username}}).then(user => {
+    models.User.findOne({
+      where: {email: email},
+      include: [{
+        model: models.Role,
+      }]
+    }).then(user => {
       const authErrorText = "user does not exist or wrong user-password pair provided";
       if (!user) {
-        res.status(401).send(responseWrapper(authErrorText, false));
+        let err = new Error(authErrorText);
+        err.status = 401;
+        return next(err);
       } else {
-        bcrypt.compare(password, user['password_hash'], function (err, passIsCorrect) {
+        bcrypt.compare(password, user['passwordHash'], function (err, passIsCorrect) {
           if (err) {
-            res.status(500).send(responseWrapper('', false, true))
+            return next(err);
           } else {
             if (!passIsCorrect) {
-              res.status(401).send(responseWrapper(authErrorText, false));
+              let err = new Error(authErrorText);
+              err.status = 401;
+              return next(err);
             } else {
-              const tokenData = jwtHandler.issue(user);
+              let tokenData;
+              try {
+                tokenData = jwtHandler.issue(user);
+              }
+              catch(err) {
+                return next(err);
+              }
+
               res.cookie(
                 jwtConfig.authCookieName,
                 tokenData.token,
                 {
-                  // domain: jwtConfig.authCookieDomain,
+                  domain: jwtConfig.authCookieDomain,
                   httpOnly: true,
                   secure: jwtConfig.authCookieSecure,
                   expire: moment(tokenData.expireDate).toDate()
                 }
               );
-              res.status(200).send(responseWrapper(tokenData.token, true));
+              res.status(200).json({
+                user: {
+                  id: user['id'],
+                  email: user['email'],
+                  roles: user['Roles'].map(role => role.name),
+                }
+              });
             }
           }
         });
@@ -150,7 +172,9 @@ module.exports = {
 
   logout: function (req, res) {
     res.clearCookie(jwtConfig.authCookieName);
-    res.status(200).send(responseWrapper("logged out", true));
+    res.status(200).json({
+      message: 'Logout successful'
+    });
   },
 
 };

@@ -6,16 +6,37 @@ import {
   userLoginFailure
 } from './login.actions';
 import { env } from '../../env';
+import { handleApiError } from '../../lib/apiErrorHandler';
 
-function loginApiCall(username,password) {
-  return new Promise(function(resolve, reject) {
-    resolve({
-      user:'test'
-    });
+
+const url = env.apiUrl + "/login";
+
+function loginApiCall(email,password) {
+  return fetch(
+    url,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      }),
+      credentials: 'include',
+      mode: 'cors',
+    }
+  )
+  .then(handleApiError)
+  .then(function(response) {
+    return response;
+  })
+  .catch(function(error) {
+    throw error;
   });
 }
 
-function logoutApiCall(username,password) {
+function logoutApiCall(email) {
   return new Promise(function(resolve, reject) {
     resolve();
   });
@@ -23,7 +44,7 @@ function logoutApiCall(username,password) {
 
 function* submitLogin(action) {
   try {
-    const response = yield call(loginApiCall, action.username, action.password);
+    const response = yield call(loginApiCall, action.email, action.password);
     localStorage.setItem(env.localStorageKey, JSON.stringify(response));
     yield put(userLoginSuccess(response));
   }

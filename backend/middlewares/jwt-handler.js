@@ -1,7 +1,6 @@
 const jwt = require('jwt-simple');
-const jwtConfig = require('../config/jwt.config');
+const jwtConfig = require('../config/app.config');
 const moment = require('moment');
-const responseWrapper = require('../utils/response-wrapper');
 
 
 /**
@@ -10,12 +9,13 @@ const responseWrapper = require('../utils/response-wrapper');
  * @returns {boolean}
  */
 function isTokenValid(token) {
-  return (!token || token.length === 0)
-    && (!moment(token.exp).isValid())
-    && (moment().isSameOrAfter(token.exp))
-    && (!token.user)
-    && (!token.user.id.toString())
-    && (!token.user.username)
+  return (token)
+    && (token.exp)
+    && (token.user)
+    && (token.user.id.toString())
+    && (token.user.email)
+    && (moment(token.exp).isValid())
+    && (!moment().isSameOrAfter(token.exp))
 }
 
 const jwtHandler = {
@@ -23,6 +23,7 @@ const jwtHandler = {
   /**
    * Issue the JWT for the user
    * @param user
+   * @param next
    * @returns {{token: String, expireDate: string}}
    */
   issue: function(user) {
@@ -31,7 +32,7 @@ const jwtHandler = {
       exp: expireDate,
       user: {
         id: user.id,
-        username: user.username,
+        email: user.email,
       },
     };
 
@@ -84,7 +85,9 @@ const jwtHandler = {
       return next();
 
       function unauthorized() {
-        res.status(401).send(responseWrapper('unauthorized', false));
+        let err = new Error('unauthorized');
+        err.status = 401;
+        return next(err);
       }
     }
   },
