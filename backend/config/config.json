@@ -4,7 +4,7 @@
     "password": "",
     "database": "governance_dev",
     "host": "localhost",
-    "port": "5435",
+    "port": "5432",
     "dialect": "postgres"
   },
   "test": {
@@ -12,6 +12,7 @@
     "password": "",
     "database": "governance_test",
     "host": "127.0.0.1",
+    "port": "5432",
     "dialect": "postgres"
   },
   "production" : {
@@ -19,6 +20,7 @@
     "password": "",
     "database": "governance_prod",
     "host": "postgres",
+    "port": "5432",
     "dialect": "postgres"
   }
 }
