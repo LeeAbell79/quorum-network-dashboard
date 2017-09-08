@@ -1,0 +1,55 @@
+version: "2.1"
+services:
+
+  node1:
+    environment:
+      - nodeId=1
+      - HOST_IP=${HOST_IP}
+    image: repo.blockapps.net:5000/blockapps/quorum-raft-node
+    ports:
+    - 21001:21001
+    - 21001:21001/udp
+    - 22001:22001
+    - 54001:54001
+    - 9000:9000
+    restart: always
+    volumes:
+    - ./config:/root/config/:ro
+
+  node2:
+    depends_on:
+    - node1
+    environment:
+    - nodeId=2
+    - HOST_IP=${HOST_IP}
+    links:
+    - node1:node1
+    image: repo.blockapps.net:5000/blockapps/quorum-raft-node
+    ports:
+    - 21002:21002
+    - 21002:21002/udp
+    - 22002:22002
+    - 54002:54002
+    - 9001:9001
+    restart: always
+    volumes:
+    - ./config:/root/config/:ro
+
+  node3:
+      depends_on:
+      - node1
+      environment:
+      - nodeId=3
+      - HOST_IP=${HOST_IP}
+      links:
+      - node1:node1
+      image: repo.blockapps.net:5000/blockapps/quorum-raft-node
+      ports:
+      - 21003:21003
+      - 21003:21003/udp
+      - 22003:22003
+      - 54003:54003
+      - 9002:9002
+      restart: always
+      volumes:
+      - ./config:/root/config/:ro
