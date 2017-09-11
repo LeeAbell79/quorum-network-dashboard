@@ -3,13 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "PORT=${PORT:-3001} node $NODE_DEBUG_OPTION ./bin/www",
-    "start:node-ping": "NODE_URL=http://localhost:22001 node node-ping/index.js",
+    "start": "PORT=${PORT:-3001} node $NODE_DEBUG_OPTION ./bin/www && npm run node-ping",
+    "node-ping": "DELAY=12000 node node-ping/index.js",
     "migrate": "sequelize db:migrate",
     "test": "NODE_ENV=test mocha"
   },
   "dependencies": {
     "bcrypt": "^1.0.2",
+    "bluebird": "^3.5.0",
     "body-parser": "~1.17.1",
     "chai": "^4.1.1",
     "chai-http": "^3.0.0",
