@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "PORT=${PORT:-3001} node $NODE_DEBUG_OPTION ./bin/www",
+    "start:node-ping": "NODE_URL=http://localhost:22001 node node-ping/index.js",
     "migrate": "sequelize db:migrate",
     "test": "NODE_ENV=test mocha"
   },
@@ -24,6 +25,8 @@
     "pg-hstore": "^2.3.2",
     "sequelize": "^4.7.1",
     "sequelize-cli": "^2.8.0",
-    "serve-favicon": "~2.4.2"
+    "serve-favicon": "~2.4.2",
+    "web3": "0.19.0",
+    "winston-color": "^1.0.0"
   }
 }
