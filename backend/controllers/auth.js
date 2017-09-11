@@ -8,11 +8,6 @@ const responseWrapper = require('../utils/response-wrapper');
 
 
 module.exports = {
-  // TODO: rewrite controllers according to Network Dashboard requirements
-
-
-
-
   // Login can be executed by logged-in users and re-logins with new credentials provided
   login: function (req, res, next) {
     const email = req.body.email;
@@ -71,6 +66,8 @@ module.exports = {
       }
     });
   },
+
+  // TODO: rewrite controllers according to Network Dashboard requirements
 
   getCurrentUser: function (req, res) {
     models.User.findById(req.user.id).then(user => {

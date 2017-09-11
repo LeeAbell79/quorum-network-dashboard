@@ -61,6 +61,7 @@ app.use(function(err, req, res, next) {
 
   if (res.status === 500) {
     console.error(err, err.stack);
+    err.message = "unexpected server error occurred"
   }
 
   let errorRespObj = {
