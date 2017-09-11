@@ -14,7 +14,6 @@ import {
 } from 'redux';
 
 import App from './App/';
-import unregister from './registerServiceWorker';
 
 import loginReducer from './components/Login/login.reducer';
 
@@ -55,4 +54,3 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('root')
 );
-unregister();

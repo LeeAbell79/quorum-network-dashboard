@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "PORT=${PORT:-3001} node $NODE_DEBUG_OPTION ./bin/www",
+    "start": "PORT=${PORT:-3001} HOST_NAME=${HOST_NAME} node $NODE_DEBUG_OPTION ./bin/www",
     "migrate": "sequelize db:migrate",
     "test": "NODE_ENV=test mocha"
   },
