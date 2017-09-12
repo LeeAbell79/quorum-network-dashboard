@@ -18,6 +18,9 @@ module.exports = function(sequelize, DataTypes) {
   };
 
   Node.prepareNodeData = (userId, name, url, publicKey=null) => {
+    if (!url.match(/^[a-zA-Z]+:\/\//)) {
+      url = 'http://' + url;
+    }
     return {
       UserId: userId,
       name: name,
