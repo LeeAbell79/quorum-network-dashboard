@@ -14,6 +14,6 @@ RUN npm install
 
 COPY . /usr/src/app
 
-EXPOSE 3000
+EXPOSE 3001
 
 CMD [ "sh", "/usr/src/app/docker-run.sh" ]
