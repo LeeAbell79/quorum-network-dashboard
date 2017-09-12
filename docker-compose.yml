@@ -9,7 +9,7 @@ services:
       #- COOKIE_DOMAIN=${COOKIE_DOMAIN} # For future use
       - QUORUM_INIT_HOST=${QUORUM_INIT_HOST}
       # Provide the nodeId:rpcPort pairs of all nodes running with current docker-compose.yml
-      - QUORUM_INIT_RPC_PORTS="1:22001,2:22002,3:22003"
+      - QUORUM_INIT_RPC_PORTS=1:22001,2:22002,3:22003
     image: nd-backend
     restart: always
     ports:
@@ -36,6 +36,9 @@ services:
       - 5432:5432
 
   nginx:
+    depends_on:
+      - backend
+      - ui
     restart: always
     image: nginx:stable-alpine
     ports:
@@ -59,7 +62,7 @@ services:
       - 9000:9000
     restart: always
     volumes:
-      - ./quorum-config:/root/config/:ro
+      - ./backend/quorum-config:/root/config/:ro
 
   node2:
     environment:
@@ -74,7 +77,7 @@ services:
       - 9001:9001
     restart: always
     volumes:
-      - ./quorum-config:/root/config/:ro
+      - ./backend/quorum-config:/root/config/:ro
 
   node3:
     environment:
@@ -89,4 +92,4 @@ services:
       - 9002:9002
     restart: always
     volumes:
-      - ./quorum-config:/root/config/:ro
+      - ./backend/quorum-config:/root/config/:ro

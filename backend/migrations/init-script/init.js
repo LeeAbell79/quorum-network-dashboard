@@ -102,7 +102,7 @@ const initScripts = {
       }
 
       // TODO: read from each node's consteallation key file instead
-      const genesisFilePath = `../quorum-config/genesis-raft.json`;
+      const genesisFilePath = `quorum-config/genesis-raft.json`;
       const genesisConfig = JSON.parse(fs.readFileSync(genesisFilePath, 'utf8'));
       let addresses = [];
       for (const address in genesisConfig.alloc ) {
@@ -110,7 +110,7 @@ const initScripts = {
       }
 
       const nodesDataList = nodes.map(node => {
-        const publicKeyFilePath = `../quorum-config/constellation/keys/tm${node.id}.pub`;
+        const publicKeyFilePath = `quorum-config/constellation/keys/tm${node.id}.pub`;
         const publicKey = fs.readFileSync(publicKeyFilePath, 'utf8');
         if (!publicKey) {
           throw new Error(`could not read the public key from ${publicKeyFilePath} for node with id ${node.id}`);
