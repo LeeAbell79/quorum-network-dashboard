@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "PORT=${PORT:-3001} node $NODE_DEBUG_OPTION ./bin/www && npm run node-ping",
-    "node-ping": "DELAY=12000 node node-ping/index.js",
+    "node-ping": "DELAY=30000 node node-ping/index.js",
     "migrate": "sequelize db:migrate",
     "test": "NODE_ENV=test mocha"
   },
