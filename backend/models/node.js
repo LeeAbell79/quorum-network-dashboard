@@ -29,13 +29,5 @@ module.exports = function(sequelize, DataTypes) {
     }
   };
 
-  Node.prototype.toJson = function() {
-    return {
-      name: this.name,
-      url: this.url,
-      publicKey: this.publicKey
-    }
-  };
-
   return Node;
 };
