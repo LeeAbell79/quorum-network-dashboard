@@ -4,7 +4,7 @@ const fs = require('fs');
 const models = require('../../models');
 
 const initialUser = {
-  email: process.env['ADMIN_EMAIL'] || 'admin4@example.com',
+  email: process.env['ADMIN_EMAIL'] || 'admin@example.com',
   password: process.env['ADMIN_PASSWORD'] || 'admin'
 };
 
@@ -101,6 +101,14 @@ const initScripts = {
         throw new Error('wrong QUORUM_INIT_RPC_PORTS value format. Expected: "nodeId:port[,nodeId:port...]"');
       }
 
+      // TODO: read from each node's consteallation key file instead
+      const genesisFilePath = `../quorum-config/genesis-raft.json`;
+      const genesisConfig = JSON.parse(fs.readFileSync(genesisFilePath, 'utf8'));
+      let addresses = [];
+      for (const address in genesisConfig.alloc ) {
+        addresses.push(address);
+      }
+
       const nodesDataList = nodes.map(node => {
         const publicKeyFilePath = `../quorum-config/constellation/keys/tm${node.id}.pub`;
         const publicKey = fs.readFileSync(publicKeyFilePath, 'utf8');
@@ -110,7 +118,9 @@ const initScripts = {
         return models.Node.prepareNodeData(
           userId,
           `node${node.id}`,
-          `${process.env['QUORUM_INIT_HOST']}:${node.port}`,
+          process.env['QUORUM_INIT_HOST'],
+          node.port,
+          addresses[node.id - 1],
           publicKey
         )
       });
