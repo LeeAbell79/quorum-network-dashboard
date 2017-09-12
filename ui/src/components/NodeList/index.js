@@ -22,7 +22,6 @@ class NodeList extends Component {
   }
 
   render() {
-    console.log(this.props.nodeList);
     return (
       <table className="pt-table pt-striped full-width">
         <thead>

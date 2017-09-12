@@ -11,7 +11,7 @@ const user = localStorage.getItem(env.localStorageKey);
 const initialState = {
   user: user !== null ? JSON.parse(user) : {},
   error: {
-    status: null,
+    status: false,
     message: null,
   },
   authenticated: user !== null
@@ -25,7 +25,7 @@ const loginReducer = function (state = initialState, action) {
       return {
         user: action.user,
         error: {
-          status: null,
+          status: false,
           message: null,
         },
         authenticated: true
@@ -33,14 +33,17 @@ const loginReducer = function (state = initialState, action) {
     case USER_LOGIN_FAILURE:
       return {
         user: {},
-        error: action.error,
+        error: {
+          status: true,
+          message: action.error.message
+        },
         authenticated: false
       };
     case USER_LOGOUT:
       return {
         user: {},
         error: {
-          status: null,
+          status: false,
           message: null,
         },
         authenticated: false

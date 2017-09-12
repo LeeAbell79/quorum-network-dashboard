@@ -69,13 +69,16 @@ class Login extends Component {
                   </div>
                 </div>
                 <div className="row pad-4">
-                  <div className="col-sm-12">
+                  <div className="col-sm-4">
                     <button
                       className="pt-button pt-intent-primary"
                       type="submit"
                     >
                         Login
                     </button>
+                  </div>
+                  <div className="col-sm-8">
+                    <p className="pt-intent-warning">{this.props.login.error.message}</p>
                   </div>
                 </div>
               </form>
