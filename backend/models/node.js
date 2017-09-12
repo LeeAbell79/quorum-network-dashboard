@@ -3,7 +3,9 @@
 module.exports = function(sequelize, DataTypes) {
   let Node = sequelize.define('Node', {
     name: {type: DataTypes.STRING, allowNull: false},
-    url: {type: DataTypes.STRING},
+    host: {type: DataTypes.STRING},
+    port: {type: DataTypes.INTEGER},
+    accountAddress: {type: DataTypes.STRING, allowNull: false},
     publicKey: {type: DataTypes.STRING},
   });
 
@@ -17,14 +19,14 @@ module.exports = function(sequelize, DataTypes) {
     Node.hasMany(models.Stat);
   };
 
-  Node.prepareNodeData = (userId, name, url, publicKey=null) => {
-    if (!url.match(/^[a-zA-Z]+:\/\//)) {
-      url = 'http://' + url;
-    }
+  Node.prepareNodeData = (userId, name, host, port, accountAddress, publicKey=null) => {
+    host = !host.match(/^[a-zA-Z]+:\/\//) ? `http://${host}` : host;
     return {
       UserId: userId,
       name: name,
-      url: url,
+      host: host,
+      port: port,
+      accountAddress: accountAddress,
       publicKey: publicKey,
     }
   };
