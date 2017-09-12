@@ -30,7 +30,7 @@ Optional parameters you may provide along with the above:
 #### Advanced configuration
 
 For advanced config check:
- - `quorum-config/` for initial Quorum network configuration
+ - `backend/quorum-config/` for initial Quorum network configuration
  - `backend/config/app.config.js` for advanced backend configuration
  - `backend/config/config.json`  for advanced database configuration
  - `
