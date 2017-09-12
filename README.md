@@ -11,6 +11,13 @@ WARNING: README may be out-of-date on the development stage
 
 ### Steps
 
+ Login to BlockApps private repo to pull Quorum docker image:
+ ```
+ docker login repo.blockapps.net:5000
+ ```
+ `TODO: move image to public repo`
+
+
  ```
  cd network-dashboard/
  ./build-images.sh
