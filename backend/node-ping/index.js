@@ -16,6 +16,12 @@ setInterval(function() {
     });
 }, process.env.DELAY);
 
+
+//TODO: remove entries older than x hours
+function cleanup() {
+
+}
+
 function queryNodes() {
   return new Promise(function(resolve, reject) {
     models.Node
@@ -41,7 +47,7 @@ function getNodeStats(node) {
 
       const isConnected = web3.isConnected();
 
-      models.Stats
+      models.Stat
         .create({
           NodeId: node.id,
           isConnected : isConnected,
