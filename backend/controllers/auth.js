@@ -53,13 +53,7 @@ module.exports = {
                   expire: moment(tokenData.expireDate).toDate()
                 }
               );
-              res.status(200).json({
-                user: {
-                  id: user['id'],
-                  email: user['email'],
-                  roles: user['Roles'].map(role => role.name),
-                }
-              });
+              res.status(200).json({user: user.toJson()});
             }
           }
         });

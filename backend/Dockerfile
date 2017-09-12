@@ -1,6 +1,10 @@
 FROM node:boron-slim
 
-RUN mkdir -p /usr/src/app
+RUN apt-get update && \
+    apt-get install -y git && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    mkdir -p /usr/src/app
 
 WORKDIR /usr/src/app
 

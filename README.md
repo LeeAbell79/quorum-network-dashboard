@@ -14,15 +14,28 @@ WARNING: README may be out-of-date on the development stage
  ```
  cd network-dashboard/
  ./build-images.sh
- HOST_IP=<HOST_IP> HOST_NAME=<HOST_NAME> docker-compose up -d
+ HOST_IP=<HOST_IP> HOST_NAME=<HOST_NAME> QUORUM_INIT_HOST=<QUORUM_INIT_HOST> docker-compose up -d
  ```
  where:
- - `<HOST_IP>` is the broadcasted host machine IP address (not the `localhost`, `127.0.0.1` or `0.0.0.0`)
+ - `<HOST_IP>` is the broadcasted host machine IP address (**NOT the `localhost`, `127.0.0.1` or `0.0.0.0`**)
  - `<HOST_NAME>` is the host name of the machine (for UI to access the API). (e.g. for local use: HOST_NAME=localhost)
+ - `<QUORUM_INIT_HOST>` is the host name or IP of the current machine used for Quorum nodes (should be reachable from the internet if external nodes are to be connected to the network)
 
- See `docker-compose.yml` for other environment variables used for configuration
+#### Optional parameters
 
-## Run locally (development)
+Optional parameters you may provide along with the above:
+ - `ADMIN_EMAIL` - the email of the initial user
+ - `ADMIN_PASSWORD` - the password of the initial user (to be changed later in the UI)
+
+#### Advanced configuration
+
+For advanced config check:
+ - `quorum-config/` for initial Quorum network configuration
+ - `backend/config/app.config.js` for advanced backend configuration
+ - `backend/config/config.json`  for advanced database configuration
+ - `
+
+## Run locally (development-only)
 
 ### Prerequisites
 
@@ -36,7 +49,7 @@ WARNING: README may be out-of-date on the development stage
   ```
   OR
 
-  create table if you have postgres running:
+  create database if you have postgres running:
   ```
   psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE governance_dev;"
   ```
@@ -47,7 +60,7 @@ WARNING: README may be out-of-date on the development stage
   ```
   cd network-dashboard/backend
   npm install
-  PORT=3001 npm start
+  npm run start:dev
   ```
 
  - Run UI server
@@ -56,6 +69,4 @@ WARNING: README may be out-of-date on the development stage
   npm install
   npm start
   ```
-
-
 `TODO: provide backend URL:PORT to UI server (in npm start)`

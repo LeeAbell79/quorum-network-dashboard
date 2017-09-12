@@ -36,5 +36,13 @@ module.exports = function (sequelize, DataTypes) {
     })
   };
 
+  User.prototype.toJson = function() {
+    return {
+      id: this.id,
+      email: this.email,
+      roles: this['Roles'].map(role => role.name),
+    }
+  };
+
   return User;
 };
