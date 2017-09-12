@@ -16,18 +16,22 @@ import {
 import App from './App/';
 
 import loginReducer from './components/Login/login.reducer';
+import nodeListReducer from './components/NodeList/nodeList.reducer.js';
 
 import watchLoginSubmit from './components/Login/login.saga';
+import watchGetNodeList from './components/NodeList/nodeList.saga';
 
 const rootReducer = combineReducers({
   form: formReducer,
   routing: routerReducer,
-  login: loginReducer
+  login: loginReducer,
+  nodeList: nodeListReducer
 });
 
 const rootSaga = function* startForeman() {
   yield [
-    fork(watchLoginSubmit)
+    fork(watchLoginSubmit),
+    fork(watchGetNodeList)
   ]
 }
 

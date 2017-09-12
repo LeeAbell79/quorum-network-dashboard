@@ -29,7 +29,7 @@ function loginApiCall(email,password) {
   )
   .then(handleApiError)
   .then(function(response) {
-    return response;
+    return response.json();
   })
   .catch(function(error) {
     throw error;

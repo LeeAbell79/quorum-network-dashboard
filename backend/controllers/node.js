@@ -9,13 +9,36 @@ module.exports = {
           err.status = 403;
           return next(err);
         } else {
-          models.Node.findAll({
-            include: [{
-              model: models.Stat,
-            }]
-          })
+          console.log(models);
+          models.sequelize.query("SELECT \
+            n.\"id\", \
+            n.\"name\", \
+            n.\"host\", \
+            n.\"accountAddress\", \
+            s.\"isConnected\", \
+            s.\"peerCount\", \
+            s.\"blockNumber\" \
+            FROM \
+              \"Nodes\" n \
+            JOIN \
+              \"Stats\" s \
+            ON \
+              s.\"NodeId\" = n.\"id\" \
+              AND s.\"createdAt\" = ( \
+                SELECT \
+                  MAX(\"createdAt\") \
+                FROM \
+                  \"Stats\" \
+                WHERE \
+                  \"NodeId\"=n.\"id\"\
+              )",
+              { type: models.sequelize.QueryTypes.SELECT}
+          )
           .then(nodes => {
             res.status(200).json({nodes : nodes});
+          })
+          .catch((err)=>{
+            throw err;
           })
         }
       }

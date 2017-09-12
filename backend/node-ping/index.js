@@ -42,7 +42,7 @@ function getNodeStats(node) {
 
     try {
       winston.info('Connecting to nodeId ' + node.id + ' with url ' + node.url);
-      const web3HttpProvider = new Web3.providers.HttpProvider(node.url);
+      const web3HttpProvider = new Web3.providers.HttpProvider(`http://${node.host}:${node.port}`);
       const web3 = new Web3(web3HttpProvider);
 
       const isConnected = web3.isConnected();

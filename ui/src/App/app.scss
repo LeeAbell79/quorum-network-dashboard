@@ -7,9 +7,17 @@ body {
   min-height: 100%;
 }
 
+.full-width {
+  width: 100%;
+}
+
 $multipliers: 5;
 
 @for $i from 1 through $multipliers {
+  .margin-#{$i*4} { margin: $i * 4px; }
   .margin-top-#{$i*4} { margin-top: $i * 4px; }
   .pad-#{$i*4} { padding: $i * 4px; }
+  .pad-top-#{$i*4} { padding-top: $i * 4px; }
+  .pad-left-#{$i*4} { padding-left: $i * 4px; }
+
 }
