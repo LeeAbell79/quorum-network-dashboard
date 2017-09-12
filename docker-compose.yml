@@ -1,5 +1,6 @@
 version: "2.1"
 services:
+
   backend:
     environment:
       - NODE_ENV=production
@@ -9,18 +10,20 @@ services:
     image: nd-backend
     restart: always
     ports:
-      - 3000:3000
+      - 3001:3001
     depends_on:
       - postgres
+
   ui:
     environment:
-      - API_URL=${API_URL}
+      - HOST_NAME=${HOST_NAME}
     image: nd-ui
     restart: always
     ports:
       - 5000:5000
     depends_on:
       - backend
+
   postgres:
     environment:
       - POSTGRES_DB=governance_prod
@@ -28,3 +31,59 @@ services:
     image: postgres:9.6
     ports:
       - 5432:5432
+
+  nginx:
+    restart: always
+    image: nginx:stable-alpine
+    ports:
+      - 80:80
+#      - 443:443
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+#      - ./certs/server.pem:/etc/ssl/certs/server.pem:ro \
+#      - ./certs/server.key:/etc/ssl/private/server.key:ro \
+
+  node1:
+    environment:
+      - nodeId=1
+      - HOST_IP=${HOST_IP}
+    image: repo.blockapps.net:5000/blockapps/quorum-raft-node
+    ports:
+      - 21001:21001
+      - 21001:21001/udp
+      - 22001:22001
+      - 54001:54001
+      - 9000:9000
+    restart: always
+    volumes:
+      - ./quorum-config:/root/config/:ro
+
+  node2:
+    environment:
+      - nodeId=2
+      - HOST_IP=${HOST_IP}
+    image: repo.blockapps.net:5000/blockapps/quorum-raft-node
+    ports:
+      - 21002:21002
+      - 21002:21002/udp
+      - 22002:22002
+      - 54002:54002
+      - 9001:9001
+    restart: always
+    volumes:
+      - ./quorum-config:/root/config/:ro
+
+  node3:
+    environment:
+      - nodeId=3
+      - HOST_IP=${HOST_IP}
+    image: repo.blockapps.net:5000/blockapps/quorum-raft-node
+    ports:
+      - 21003:21003
+      - 21003:21003/udp
+      - 22003:22003
+      - 54003:54003
+      - 9002:9002
+    restart: always
+    volumes:
+      - ./quorum-config:/root/config/:ro

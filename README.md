@@ -1,5 +1,7 @@
 # network-dashboard
 
+WARNING: README may be out-of-date on the development stage
+
 ## Run in docker (production-ready)
 
 ### Prerequisites
@@ -12,10 +14,13 @@
  ```
  cd network-dashboard/
  ./build-images.sh
- docker-compose up -d
+ HOST_IP=<HOST_IP> HOST_NAME=<HOST_NAME> docker-compose up -d
  ```
+ where:
+ - `<HOST_IP>` is the broadcasted host machine IP address (not the `localhost`, `127.0.0.1` or `0.0.0.0`)
+ - `<HOST_NAME>` is the host name of the machine (for UI to access the API). (e.g. for local use: HOST_NAME=localhost)
 
- see docker-compose.yml for possible environment variables used for configuration
+ See `docker-compose.yml` for other environment variables used for configuration
 
 ## Run locally (development)
 
@@ -51,5 +56,6 @@
   npm install
   npm start
   ```
+
 
 `TODO: provide backend URL:PORT to UI server (in npm start)`

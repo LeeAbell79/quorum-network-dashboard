@@ -6,9 +6,10 @@ module.exports = {
   resetTokenValidity: 2, //in hours
   authCookieName: 'networkDashboardAuth',
   authCookieSecure: false,
-  authCookieDomain: process.env['COOKIE_DOMAIN'] || '', //if backend hosted on a domain different from the frontend,
+  authCookieDomain: process.env['HOST_NAME'] || '', //if backend hosted on a domain different from the frontend,
   domainWhiteList: [
     'http://localhost:3000',
-    'http://localhost:3001'
+    'http://localhost:3001',
+    'http://localhost:5000'
   ]
 };
