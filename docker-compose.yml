@@ -7,6 +7,9 @@ services:
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - COOKIE_DOMAIN=${COOKIE_DOMAIN}
+      - QUORUM_INIT_HOST=${QUORUM_INIT_HOST}
+      # Provide the nodeId:rpcPort pairs of all nodes running with current docker-compose.yml
+      - QUORUM_INIT_RPC_PORTS="1:22001,2:22002,3:22003"
     image: nd-backend
     restart: always
     ports:
