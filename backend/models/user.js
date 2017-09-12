@@ -12,6 +12,29 @@ module.exports = function (sequelize, DataTypes) {
 
   User.associate = function(models) {
     User.belongsToMany(models.Role, {through: 'UserRole'});
+    User.hasMany(models.Node);
   };
+
+  /**
+   * Check if user has role by his id
+   * @param userId: user id (e.g. from req.user.id)
+   * @param roleName: name of the role (e.g. 'admin')
+   * return Promise(boolean)
+   */
+  User.checkRoleById = (userId, roleName) => {
+    return User.findById(
+      userId,
+      {
+        include: [{model: sequelize.models.Role}],
+      }
+    ).then(user => {
+      if (!user) {
+        throw new Error('unknown user id')
+      } else {
+        return user.Roles.map(roleObj => roleObj.dataValues.name).includes(roleName);
+      }
+    })
+  };
+
   return User;
 };

@@ -13,7 +13,25 @@ module.exports = function(sequelize, DataTypes) {
       foreignKey: {
         allowNull: false
       }
-    })
+    });
+    Node.hasMany(models.Stat);
+  };
+
+  Node.prepareNodeData = (userId, name, url, publicKey=null) => {
+    return {
+      UserId: userId,
+      name: name,
+      url: url,
+      publicKey: publicKey,
+    }
+  };
+
+  Node.prototype.toJson = function() {
+    return {
+      name: this.name,
+      url: this.url,
+      publicKey: this.publicKey
+    }
   };
 
   return Node;
