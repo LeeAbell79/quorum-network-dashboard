@@ -6,7 +6,7 @@ WARNING: README may be out-of-date on the development stage
 
 ### Prerequisites
 
- - Docker
+ - Docker (1.12+ or 17.04+)
  - Docker-compose
 
 ### Steps
@@ -25,7 +25,7 @@ WARNING: README may be out-of-date on the development stage
  ```
  where:
  - `<HOST_IP>` is the broadcasted host machine IP address (**NOT the `localhost`, `127.0.0.1` or `0.0.0.0`**)
- - `<HOST_NAME>` is the host name of the machine (for UI to access the API). (e.g. for local use: HOST_NAME=localhost)
+ - `<HOST_NAME>` is the host name of the machine (for web browser to access the API from client side). (e.g. for local use only: HOST_NAME=localhost)
  - `<QUORUM_INIT_HOST>` is the host name or IP of the current machine used for Quorum nodes (should be reachable from the internet if external nodes are to be connected to the network)
 
 #### Optional parameters
@@ -40,7 +40,7 @@ For advanced config check:
  - `backend/quorum-config/` for initial Quorum network configuration
  - `backend/config/app.config.js` for advanced backend configuration
  - `backend/config/config.json`  for advanced database configuration
- - `
+ - `docker-compose.yml` for deployment configuration (quorum nodes count etc)
 
 ## Run locally (development-only)
 
@@ -76,4 +76,4 @@ For advanced config check:
   npm install
   npm start
   ```
-`TODO: provide backend URL:PORT to UI server (in npm start)`
+`TODO: provide backend URL:PORT to UI server (in npm start) (URL may be provided with HOST_NAME`
