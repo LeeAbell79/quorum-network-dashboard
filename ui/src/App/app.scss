@@ -11,7 +11,7 @@ body {
   width: 100%;
 }
 
-$multipliers: 5;
+$multipliers: 8;
 
 @for $i from 1 through $multipliers {
   .margin-#{$i*4} { margin: $i * 4px; }
@@ -19,5 +19,5 @@ $multipliers: 5;
   .pad-#{$i*4} { padding: $i * 4px; }
   .pad-top-#{$i*4} { padding-top: $i * 4px; }
   .pad-left-#{$i*4} { padding-left: $i * 4px; }
-
+  .width-#{$i*60} { width: $i * 60px;}
 }
