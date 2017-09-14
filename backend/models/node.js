@@ -5,6 +5,7 @@ module.exports = function(sequelize, DataTypes) {
     name: {type: DataTypes.STRING, allowNull: false},
     host: {type: DataTypes.STRING},
     port: {type: DataTypes.INTEGER},
+    constellationPort: {type: DataTypes.INTEGER},
     accountAddress: {type: DataTypes.STRING, allowNull: false},
     publicKey: {type: DataTypes.STRING},
   });
@@ -19,13 +20,14 @@ module.exports = function(sequelize, DataTypes) {
     Node.hasMany(models.Stat);
   };
 
-  Node.prepareNodeData = (userId, name, host, port, accountAddress, publicKey=null) => {
+  Node.prepareNodeData = (userId, name, host, port, constellationPort, accountAddress, publicKey=null) => {
     host = !host.match(/^[a-zA-Z]+:\/\//) ? `http://${host}` : host;
     return {
       UserId: userId,
       name: name,
       host: host,
       port: port,
+      constellationPort: constellationPort,
       accountAddress: accountAddress,
       publicKey: publicKey,
     }

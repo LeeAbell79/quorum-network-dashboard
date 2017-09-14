@@ -10,6 +10,7 @@ services:
       - QUORUM_INIT_HOST=${QUORUM_INIT_HOST}
       # Provide the nodeId:rpcPort pairs of all nodes running with current docker-compose.yml
       - QUORUM_INIT_RPC_PORTS=1:22001,2:22002,3:22003
+      - QUORUM_INIT_CONSTELLATION_PORTS=1:9000,2:9001,3:9002
     image: nd-backend
     restart: always
     ports:

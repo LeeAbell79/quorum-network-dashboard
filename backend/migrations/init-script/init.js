@@ -101,6 +101,21 @@ const initScripts = {
         throw new Error('wrong QUORUM_INIT_RPC_PORTS value format. Expected: "nodeId:port[,nodeId:port...]"');
       }
 
+      let constellationNodes = [];
+      try {
+        // todo: add regexp to validate format
+        process.env['QUORUM_INIT_CONSTELLATION_PORTS'].split(',').forEach(
+          pair => {
+            pair = pair.split(':');
+            constellationNodes.push({id: pair[0], port: pair[1]});
+          }
+        );
+      } catch(err) {
+        console.error(err);
+        throw new Error('wrong QUORUM_INIT_CONSTELLATION_PORTS value format. Expected: "nodeId:port[,nodeId:port...]"');
+      }
+
+
       // TODO: read from each node's consteallation key file instead
       const genesisFilePath = `quorum-config/genesis-raft.json`;
       const genesisConfig = JSON.parse(fs.readFileSync(genesisFilePath, 'utf8'));
@@ -115,11 +130,15 @@ const initScripts = {
         if (!publicKey) {
           throw new Error(`could not read the public key from ${publicKeyFilePath} for node with id ${node.id}`);
         }
+
+        const constellationPort = constellationNodes.find(cNode => cNode.id === node.id).port;
+
         return models.Node.prepareNodeData(
           userId,
           `node${node.id}`,
           process.env['QUORUM_INIT_HOST'],
           node.port,
+          constellationPort,
           addresses[node.id - 1],
           publicKey
         )
