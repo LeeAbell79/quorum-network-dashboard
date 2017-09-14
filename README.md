@@ -31,8 +31,10 @@ WARNING: README may be out-of-date on the development stage
 #### Optional parameters
 
 Optional parameters you may provide along with the above:
- - `ADMIN_EMAIL` - the email of the initial user
- - `ADMIN_PASSWORD` - the password of the initial user (to be changed later in the UI)
+ - `ADMIN_EMAIL` - the email of the initial admin user
+ - `ADMIN_PASSWORD` - the password of the initial admin user (to be changed later in the UI)
+ - `PARTY_EMAIL` - the email of the initial party user (demo purpose only)
+ - `PARTY_PASSWORD` - the password of the initial party user (demo purpose only)
 
 #### Advanced configuration
 

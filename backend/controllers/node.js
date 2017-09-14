@@ -69,8 +69,8 @@ module.exports = {
 
           const nodeData = models.Node.prepareNodeData(req.user.id, nodeName, nodeHost, nodePort, nodeCPort, nodeAccountAddress, nodePublicKey);
           models.Node.create(nodeData).then(
-            res => {
-              res.status(200).json();
+            result => {
+              res.status(200).json({message: "node created"});
             }
           )
         }

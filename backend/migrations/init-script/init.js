@@ -3,16 +3,22 @@ const fs = require('fs');
 
 const models = require('../../models');
 
-const initialUser = {
-  email: process.env['ADMIN_EMAIL'] || 'admin@example.com',
-  password: process.env['ADMIN_PASSWORD'] || 'admin'
+const initialUsers = {
+  admin: {
+    email: process.env['ADMIN_EMAIL'] || 'admin@example.com',
+    password: process.env['ADMIN_PASSWORD'] || 'admin'
+  },
+  party: {
+    email: process.env['PARTY_EMAIL'] || 'party@example.com',
+    password: process.env['PARTY_PASSWORD'] || 'party'
+  }
 };
 
 // TODO: refactor, add rejects handling (or rewrite to migrations)
 
 const createInitialData = () =>
   new Promise(resolve => {
-    initScripts.createInitialUser()
+    initScripts.createInitialUsers()
       .then(() =>
         initScripts.registerInitialNodes(1)
           .then(() => resolve())
@@ -24,43 +30,60 @@ const initScripts = {
   /**
    * Check if not exists and create the admin user with id=1
    */
-  createInitialUser: () => new Promise((resolve, reject) => {
+  createInitialUsers: () => new Promise((resolve, reject) => {
     models.User.count().then(count => {
       if (count) {
         console.log("At least one user exists - skipping the init process");
         return resolve(false);
       }
-      console.log('First run - default user is being created...');
+      console.log('First run - default users are being created...');
       if (!process.env['ADMIN_EMAIL']) {
-        console.log(`ADMIN_EMAIL env var not provided - using default email: ${initialUser.email}`)
+        console.log(`ADMIN_EMAIL env var not provided - using default email: ${initialUsers.admin.email}`)
       }
       if (!process.env['ADMIN_PASSWORD']) {
-        console.log(`ADMIN_PASSWORD env var not provided - using default password: ${initialUser.password}`)
+        console.log(`ADMIN_PASSWORD env var not provided - using default password: ${initialUsers.admin.password}`)
       }
+      if (!process.env['PARTY_EMAIL']) {
+        console.log(`PARTY_EMAIL env var not provided - using default email: ${initialUsers.party.email}`)
+      }
+      if (!process.env['PARTY_PASSWORD']) {
+        console.log(`PARTY_PASSWORD env var not provided - using default password: ${initialUsers.party.password}`)
+      }
+
 
       // Create default roles
       models.Role.bulkCreate([{name: "admin"}, {name: "party"}]).then(() => {
-        // create the password hash
-        bcrypt.hash(initialUser.password, 10, function (err, hash) {
-          if (err) {
-            throw Error('password encryption error for password provided in ADMIN_PASSWORD env var')
-          }
-          // Create first user
-          models.User.create({
-            email: initialUser.email,
-            passwordHash: hash,
-            isConfirmed: true
-          }).then(function (user) {
-            // get the admin role (can't use createdRoles since they don't have ids at this point)
-            models.Role.findAll({
-              where: {
-                name: 'admin'
-              }
-            }).then(function (adminRole) {
-              user.addRole(adminRole).then(() =>
-                resolve(user)
-              );
-            })
+        // Create admin user
+        models.User.create({
+          email: initialUsers.admin.email,
+          passwordHash: bcrypt.hashSync(initialUsers.admin.password, 10),
+          isConfirmed: true
+        }).then(function (adminUser) {
+          // get the admin role (can't use createdRoles since they don't have ids at this point)
+          models.Role.findAll({
+            where: {
+              name: 'admin'
+            }
+          }).then(function (adminRole) {
+            adminUser.addRole(adminRole).then(() =>
+              // Create admin user
+              models.User.create({
+                email: initialUsers.party.email,
+                passwordHash: bcrypt.hashSync(initialUsers.party.password, 10),
+                isConfirmed: true
+              }).then(function (partyUser) {
+                // get the admin role (can't use createdRoles since they don't have ids at this point)
+                models.Role.findAll({
+                  where: {
+                    name: 'party'
+                  }
+                }).then(function (partyRole) {
+                  partyUser.addRole(partyRole).then(() =>
+                    resolve(true)
+                  );
+                })
+              })
+            );
           })
         })
       })
