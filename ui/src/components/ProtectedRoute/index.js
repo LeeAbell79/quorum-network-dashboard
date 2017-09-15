@@ -8,8 +8,8 @@ class ProtectedRoute extends Route {
 
   hasRole(roles) {
     const props = this.props;
-    return roles.reduce(function(hasRole, role){
-      return hasRole || props.login.user.roles.indexOf(role) > -1 ;
+    return roles.reduce(function(check, role){
+      return check || props.login.user.roles.indexOf(role) > -1 ;
     }, false);
   }
 

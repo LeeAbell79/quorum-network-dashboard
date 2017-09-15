@@ -11,11 +11,7 @@ router.post('/login', authController.login);
 
 router.get('/nodes', jwtHandler.validateRequest(), nodeController.list);
 
-// router.post('/users', authController.createUser);
-//
-// router.get('/users/:uid', jwtHandler.validateRequest(), authController.getCurrentUser);
-//
-// router.patch('/users/:uid', jwtHandler.validateRequest(), authController.editUser);
+router.post('/nodes', jwtHandler.validateRequest(), nodeController.create);
 
 router.post('/logout', jwtHandler.validateRequest(), authController.logout);
 

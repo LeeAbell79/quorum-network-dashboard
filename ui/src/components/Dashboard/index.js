@@ -1,9 +1,16 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {withRouter} from 'react-router-dom';
+import {withRouter,Link} from 'react-router-dom';
 import NodeList from '../NodeList/';
+import {
+  addNodeNavigationSuccess
+} from '../AddNode/addNode.actions';
 
 class Dashboard extends Component {
+  componentWillMount = () => {
+    this.props.addNodeNavigationSuccess();
+  }
+
   render() {
     return (
       <div className="container-fluid">
@@ -13,11 +20,17 @@ class Dashboard extends Component {
               Network
             </h3>
           </div>
-          <div className="col-xs-6 col-sm-4 text-right pad-top-16">
-            <button type="button" className="pt-button pt-intent-primary">
-              Invite Party
-            </button>
-          </div>
+          {
+            this.props.login.authenticated && this.props.login.user.roles && this.props.login.user.roles.indexOf('admin') >= 0
+            ? <div className="col-xs-6 col-sm-4 text-right pad-top-16">
+                <Link to="/add-node">
+                  <button type="button" className="pt-button pt-intent-primary">
+                    Add Node
+                  </button>
+                </Link>
+              </div>
+            : <div className="col-xs-6 col-sm-4 text-right pad-top-16"></div>
+          }
         </div>
         <div className="row">
           <div className="col-xs-12 col-sm-8 col-sm-offset-2">
@@ -33,11 +46,16 @@ class Dashboard extends Component {
 }
 
 function mapStateToProps(state) {
-  return {};
+  return {
+    login: state.login
+  };
 }
 
 export default withRouter(
   connect(
-    mapStateToProps
+    mapStateToProps,
+    {
+      addNodeNavigationSuccess
+    }
   )(Dashboard)
 );
