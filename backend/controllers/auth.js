@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const moment = require('moment');
 
 const appConfig = require('../config/app.config');
-const jwtHandler = require('../middlewares/jwt-handler.js');
+const authHandler = require('../middlewares/authHandler.js');
 const models = require('../models');
 
 
@@ -36,7 +36,7 @@ module.exports = {
             } else {
               let tokenData;
               try {
-                tokenData = jwtHandler.issue(user);
+                tokenData = authHandler.issue(user);
               }
               catch(err) {
                 return next(err);
