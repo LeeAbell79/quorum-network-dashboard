@@ -20,13 +20,17 @@ class Dashboard extends Component {
               Network
             </h3>
           </div>
-          <div className="col-xs-6 col-sm-4 text-right pad-top-16">
-            <Link to="/add-node">
-              <button type="button" className="pt-button pt-intent-primary">
-                Add Node
-              </button>
-            </Link>
-          </div>
+          {
+            this.props.login.authenticated && this.props.login.user.roles.indexOf('admin') >= 0
+            ? <div className="col-xs-6 col-sm-4 text-right pad-top-16">
+                <Link to="/add-node">
+                  <button type="button" className="pt-button pt-intent-primary">
+                    Add Node
+                  </button>
+                </Link>
+              </div>
+            : <div className="col-xs-6 col-sm-4 text-right pad-top-16"></div>
+          }
         </div>
         <div className="row">
           <div className="col-xs-12 col-sm-8 col-sm-offset-2">
@@ -42,7 +46,9 @@ class Dashboard extends Component {
 }
 
 function mapStateToProps(state) {
-  return {};
+  return {
+    login: state.login
+  };
 }
 
 export default withRouter(

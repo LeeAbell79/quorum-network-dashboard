@@ -45,8 +45,8 @@ function logoutApiCall(email) {
 function* submitLogin(action) {
   try {
     const response = yield call(loginApiCall, action.email, action.password);
-    localStorage.setItem(env.localStorageKey, JSON.stringify(response));
-    yield put(userLoginSuccess(response));
+    localStorage.setItem(env.localStorageKey, JSON.stringify(response.user));
+    yield put(userLoginSuccess(response.user));
   }
   catch(err)
   {

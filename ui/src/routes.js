@@ -13,6 +13,6 @@ export const routes = (
     </Route>
     <Route exact path="/login" component={Login}/>
     <ProtectedRoute exact path="/dashboard" component={Dashboard}/>
-    <ProtectedRoute exact path="/add-node" component={AddNode}/>
+    <ProtectedRoute exact path="/add-node" component={AddNode} roles={['admin']}/>
   </Switch>
 );
