@@ -21,7 +21,7 @@ class Dashboard extends Component {
             </h3>
           </div>
           {
-            this.props.login.authenticated && this.props.login.user.roles.indexOf('admin') >= 0
+            this.props.login.authenticated && this.props.login.user.roles && this.props.login.user.roles.indexOf('admin') >= 0
             ? <div className="col-xs-6 col-sm-4 text-right pad-top-16">
                 <Link to="/add-node">
                   <button type="button" className="pt-button pt-intent-primary">
