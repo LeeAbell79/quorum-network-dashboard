@@ -5,7 +5,7 @@ const randToken = require('rand-token');
 const stringTemplate = require('string-template');
 
 const appConfig = require('../config/app.config');
-const jwtHandler = require('../middlewares/jwt-handler.js');
+const authHandler = require('../middlewares/authHandler.js');
 const models = require('../models');
 const sendEmail = require('../middlewares/email-handler');
 
@@ -52,7 +52,7 @@ module.exports = {
             } else {
               let tokenData;
               try {
-                tokenData = jwtHandler.issue(user);
+                tokenData = authHandler.issue(user);
               }
               catch(err) {
                 return next(err);

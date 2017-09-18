@@ -1,22 +1,21 @@
 import {
-  ADD_NODE_NAVIGATION_SUCCESS,
+  INVITE_SUCCESS,
   ADD_NODE_SUCCESS,
-} from './addNode.actions';
+} from './invite.actions';
 
 const initialState = {
-  redirectToDashboard: false
+  nodeCreated: false,
 };
 
 const reducer = function (state = initialState, action) {
   switch (action.type) {
     case ADD_NODE_SUCCESS:
       return {
-        redirectToDashboard: true
+        ...state,
+        nodeCreated: true
       }
-    case ADD_NODE_NAVIGATION_SUCCESS: 
-      return {
-        redirectToDashboard: false
-      }
+    case INVITE_SUCCESS:
+      return initialState
     default:
       return state;
   }

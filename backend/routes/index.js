@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const jwtHandler = require('../middlewares/jwt-handler.js');
+const authHandler = require('../middlewares/authHandler.js');
 
 const authController = require('../controllers/auth');
 const nodeController = require('../controllers/node');
@@ -10,15 +10,16 @@ const nodeController = require('../controllers/node');
 router.post('/login', authController.login);
 
 // TODO: add admin role check
-router.post('/users', jwtHandler.validateRequest(), authController.create);
+router.post('/users', authHandler.validateRequest(), authController.create);
 
-router.post('/users/confirm', jwtHandler.validateRequest(), authController.confirm);
+router.post('/users/confirm', authHandler.validateRequest(), authController.confirm);
 
-router.get('/nodes', jwtHandler.validateRequest(), nodeController.list);
+router.get('/nodes', authHandler.validateRequest(), nodeController.list);
 
-router.put('/nodes', jwtHandler.validateRequest(), nodeController.update);
-// router.post('/nodes', jwtHandler.validateRequest(), nodeController.create);
+router.put('/nodes', authHandler.validateRequest(), nodeController.update);
 
-router.post('/logout', jwtHandler.validateRequest(), authController.logout);
+// router.post('/nodes', authHandler.validateRequest(), nodeController.create);
+
+router.post('/logout', authHandler.validateRequest(), authController.logout);
 
 module.exports = router;
