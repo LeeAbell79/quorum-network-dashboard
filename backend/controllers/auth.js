@@ -88,81 +88,78 @@ module.exports = {
     const nodeName = req.body['nodeName'];
     const host = req.body['host'];
 
-    if (!email || !nodeName || !host) {
-      let err = new Error("wrong params, expected: {email, nodeName, host}");
-      err.status = 400;
-      return next(err);
-    }
+    models.User.checkRoleById(req.user.id, 'admin').then(isAdmin => {
+      if (!isAdmin) {
+        let err = new Error('admin permissions needed');
+        err.status = 403;
+        return next(err);
+      } else {
+        if (!email || !nodeName || !host) {
+          let err = new Error("wrong params, expected: {email, nodeName, host}");
+          err.status = 400;
+          return next(err);
+        }
 
-    if (!emailValidator.validate(email)) {
-      let err = new Error("wrong email provided");
-      err.status = 400;
-      return next(err);
-    }
+        if (!emailValidator.validate(email)) {
+          let err = new Error("wrong email provided");
+          err.status = 400;
+          return next(err);
+        }
 
-    return new Promise((resolve, reject) => {
-      models.User.findOne({where: {email: email}}).then(
-        user => {
-          if (user) {
-            resolve(user);
-          } else {
-            models.User.create(
-              {
-                email: email,
-                confirmationToken: randToken.generate(16),
-                isConfirmed: false,
-              }
-            ).then(
-              createdUser => {
+        return new Promise((resolve, reject) => {
+          models.User.findOne({where: {email: email}}).then(user => {
+            if (user) {
+              resolve(user);
+            } else {
+              models.User.create(
+                {
+                  email: email,
+                  confirmationToken: randToken.generate(16),
+                  isConfirmed: false,
+                }
+              ).then(createdUser => {
                 models.Role.findOne({
                   where: {
                     name: 'party'
                   }
-                }).then(
-                  partyRole => {
-                    createdUser.addRole(partyRole).then(() => {
-                      sendEmail(
-                        {
-                          from: appConfig.emailConfig.from,
-                          to: createdUser.email,
-                          subject: appConfig.emailConfig.notificationSubject,
-                          text: stringTemplate(appConfig.emailConfig.notificationText, {TOKEN: createdUser.confirmationToken}),
-                          html: stringTemplate(appConfig.emailConfig.notificationHTML, {TOKEN: createdUser.confirmationToken}),
-                        }
-                      ).then(
-                        success => {
-                          if (success) {
-                            resolve(createdUser);
-                          } else {
-                            reject("invitation email could not been sent")
-                          }
-                        });
-                    })
-                  }
-                )
-              }
-            )
-          }
-        }
-      );
-    }).then(
-      user => {
-        models.Node.create(
-          models.Node.prepareNodeData(user.id, nodeName, host)
-        ).then(node => {
-          res.status(200).json({node: node});
-        }).catch(error => {
-          if (error.name === "SequelizeUniqueConstraintError") {
-            let err = new Error("Node with name provided already exists");
-            err.status = 409;
-            return next(err);
-          }
-          console.error(error);
-        });
-
+                }).then(partyRole => {
+                  createdUser.addRole(partyRole).then(() => {
+                    sendEmail(
+                      {
+                        from: appConfig.emailConfig.from,
+                        to: createdUser.email,
+                        subject: appConfig.emailConfig.notificationSubject,
+                        text: stringTemplate(appConfig.emailConfig.notificationText, {TOKEN: createdUser.confirmationToken}),
+                        html: stringTemplate(appConfig.emailConfig.notificationHTML, {TOKEN: createdUser.confirmationToken}),
+                      }
+                    ).then(success => {
+                      if (success) {
+                        resolve(createdUser);
+                      } else {
+                        reject("invitation email could not been sent")
+                      }
+                    });
+                  })
+                })
+              })
+            }
+          });
+        }).then(user => {
+          models.Node.create(
+            models.Node.prepareNodeData(user.id, nodeName, host)
+          ).then(node => {
+            res.status(200).json({node: node});
+          }).catch(error => {
+            if (error.name === "SequelizeUniqueConstraintError") {
+              let err = new Error("Node with name provided already exists");
+              err.status = 409;
+              return next(err);
+            }
+            console.error(error);
+          });
+        })
       }
-    )
-
+    })
   },
 
   confirm: function(req, res, next) {
@@ -193,24 +190,10 @@ module.exports = {
           },
           {fields: ['passwordHash', 'confirmationToken', 'isConfirmed']}
         ).then(user => {
-          let tokenData;
-          try {
-            tokenData = jwtHandler.issue(user);
-          }
-          catch(err) {
-            return next(err);
-          }
-          res.cookie(
-            appConfig.authCookieName,
-            tokenData.token,
-            {
-              domain: appConfig.authCookieDomain,
-              httpOnly: true,
-              secure: appConfig.authCookieSecure,
-              expire: moment(tokenData.expireDate).toDate()
-            }
-          );
-          res.status(200).json({message: "user confirmed successfully"})
+          res.clearCookie(appConfig.authCookieName);
+          res.status(200).json({
+            message: 'user confirmed successfully, please re-login'
+          });
         })
       }
     })

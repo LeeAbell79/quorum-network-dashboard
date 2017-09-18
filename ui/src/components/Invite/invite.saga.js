@@ -7,10 +7,9 @@ import {
 import { env } from '../../env';
 import { handleApiError } from '../../lib/apiErrorHandler';
 
-const nodeUrl = env.apiUrl + '/nodes';
-const userUrl = env.apiUrl + '/users';
+const url = env.apiUrl + '/users';
 
-function apiCall(url ,body) {
+function apiCall(url, body) {
   return fetch(
     url,
     {
@@ -34,24 +33,14 @@ function apiCall(url ,body) {
 
 function* submitNode(action) {
   try {
-    const response = yield call(
-      apiCall,
-      userUrl,
-      JSON.stringify(
-        {
-          email: action.values.email
-        }
-      )
-    );
-    // TODO: verify userid field in response
     yield call(
       apiCall,
-      nodeUrl,
+      url,
       JSON.stringify(
         {
-          name: action.values.name,
-          publicIp: action.values.publicIp,
-          userId: response.user.id
+          nodeName: action.values.nodeName,
+          email: action.values.email,
+          host: action.values.host
         }
       )
     );

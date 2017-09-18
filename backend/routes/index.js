@@ -1,5 +1,5 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
 const authHandler = require('../middlewares/authHandler.js');
 
@@ -9,10 +9,9 @@ const nodeController = require('../controllers/node');
 
 router.post('/login', authController.login);
 
-// TODO: add admin role check
 router.post('/users', authHandler.validateRequest(), authController.create);
 
-router.post('/users/confirm', authHandler.validateRequest(), authController.confirm);
+router.post('/users/confirm', authController.confirm);
 
 router.get('/nodes', authHandler.validateRequest(), nodeController.list);
 

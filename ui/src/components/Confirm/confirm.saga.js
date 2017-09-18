@@ -44,6 +44,7 @@ function* submitConfirmation(action) {
       )
     );
     yield put(confirmAccountSuccess());
+    localStorage.removeItem(env.localStorageKey);
   }
   catch(err) {
     yield put(confirmAccountFailure());

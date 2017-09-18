@@ -8,9 +8,8 @@ class Invite extends Component {
 
   submit = (values) => {
     this.props.addNode(values);
-  }
-  // TODO: make it one call, call both create user and add node in same call.
-  // not atomic but what the hell.
+  };
+
   render() {
     if(this.props.invite.nodeCreated) {
       return(
@@ -48,7 +47,7 @@ class Invite extends Component {
                   </label>
                   <div className="pt-form-content">
                     <Field
-                      name="name"
+                      name="nodeName"
                       component="input"
                       type="text"
                       placeholder="node X"
@@ -80,10 +79,10 @@ class Invite extends Component {
                   </label>
                   <div className="pt-form-content">
                     <Field
-                      name="publicIp"
+                      name="host"
                       component="input"
-                      type="number"
-                      placeholder="127.0.0.1"
+                      type="text"
+                      placeholder="8.8.8.8"
                       className="pt-input"
                       required
                     />
@@ -91,7 +90,7 @@ class Invite extends Component {
                   </div>
                 </div>
 
-                <button className="pt-button pt-intent-primary width-120" onClick={this.props.handleSubmit(this.submit)}>Invite Participant</button>
+                <button className="pt-button pt-intent-primary" onClick={this.props.handleSubmit(this.submit)}>Invite Participant</button>
               </form>
             </div>
           </div>

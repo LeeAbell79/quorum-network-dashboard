@@ -13,7 +13,7 @@ export const routes = (
       <Redirect to="/dashboard" />
     </Route>
     <Route exact path="/login" component={Login}/>
-    <Route exact path="/confirm/:token" component={Confirm}/>
+    <Route exact path="/invite/:token" component={Confirm}/>
     <ProtectedRoute exact path="/dashboard" component={Dashboard}/>
     <ProtectedRoute exact path="/invite" component={Invite} roles={['admin']}/>
   </Switch>
