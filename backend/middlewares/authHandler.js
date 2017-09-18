@@ -18,7 +18,7 @@ function isTokenValid(token) {
     && (!moment().isSameOrAfter(token.exp))
 }
 
-const jwtHandler = {
+const authHandler = {
 
   /**
    * Issue the JWT for the user
@@ -93,4 +93,4 @@ const jwtHandler = {
   },
 };
 
-module.exports = jwtHandler;
+module.exports = authHandler;

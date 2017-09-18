@@ -31,16 +31,13 @@ WARNING: README may be out-of-date on the development stage
 #### Optional parameters
 
 Optional parameters you may provide along with the above:
- - `ADMIN_EMAIL` - the email of the initial admin user
- - `ADMIN_PASSWORD` - the password of the initial admin user (to be changed later in the UI)
- - `PARTY_EMAIL` - the email of the initial party user (demo purpose only)
- - `PARTY_PASSWORD` - the password of the initial party user (demo purpose only)
+ - `ADMIN_PASSWORD` - the password for the initial admin user (default is "admin")
 
 #### Advanced configuration
 
 For advanced config check:
  - `backend/quorum-config/` for initial Quorum network configuration
- - `backend/config/app.config.js` for advanced backend configuration
+ - `backend/config/app.config.js` for advanced backend configuration (JWT, initial user, SMTP, email texts)
  - `backend/config/config.json`  for advanced database configuration
  - `docker-compose.yml` for deployment configuration (quorum nodes count etc)
 

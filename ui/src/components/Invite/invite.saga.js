@@ -3,14 +3,13 @@ import {
   ADD_NODE,
   addNodeSuccess,
   addNodeFailure
-} from './addNode.actions';
+} from './invite.actions';
 import { env } from '../../env';
 import { handleApiError } from '../../lib/apiErrorHandler';
 
+const url = env.apiUrl + '/users';
 
-const url = env.apiUrl + "/nodes";
-
-function nodeApiCall(values) {
+function apiCall(url, body) {
   return fetch(
     url,
     {
@@ -18,7 +17,7 @@ function nodeApiCall(values) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: values,
+      body: body,
       credentials: 'include',
       mode: 'cors',
     }
@@ -34,7 +33,17 @@ function nodeApiCall(values) {
 
 function* submitNode(action) {
   try {
-    yield call(nodeApiCall,JSON.stringify(action.values));
+    yield call(
+      apiCall,
+      url,
+      JSON.stringify(
+        {
+          nodeName: action.values.nodeName,
+          email: action.values.email,
+          host: action.values.host
+        }
+      )
+    );
     yield put(addNodeSuccess());
   }
   catch(err) {
@@ -42,7 +51,8 @@ function* submitNode(action) {
   }
 }
 
-export default function* watchNodeSubmit() {
+
+export default function* watchInviteSubmit() {
   yield [
     takeLatest(ADD_NODE, submitNode),
   ]

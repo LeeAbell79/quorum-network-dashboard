@@ -4,7 +4,6 @@ services:
   backend:
     environment:
       - NODE_ENV=production
-      - ADMIN_EMAIL=${ADMIN_EMAIL}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       #- COOKIE_DOMAIN=${COOKIE_DOMAIN} # For future use
       - QUORUM_INIT_HOST=${QUORUM_INIT_HOST}
@@ -33,6 +32,7 @@ services:
       - POSTGRES_DB=governance_prod
       - POSTGRES_USER=postgres
     image: postgres:9.6
+    # Do not open the port on production machine if PGPASSWORD is not set
     ports:
       - 5432:5432
 
