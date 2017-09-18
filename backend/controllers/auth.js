@@ -1,9 +1,13 @@
 const bcrypt = require('bcrypt');
+const emailValidator = require('email-validator');
 const moment = require('moment');
+const randToken = require('rand-token');
+const stringTemplate = require('string-template');
 
 const appConfig = require('../config/app.config');
 const jwtHandler = require('../middlewares/jwt-handler.js');
 const models = require('../models');
+const sendEmail = require('../middlewares/email-handler');
 
 
 module.exports = {
@@ -11,6 +15,18 @@ module.exports = {
   login: function (req, res, next) {
     const email = req.body.email;
     const password = req.body.password;
+
+    if (!email || !password) {
+      let err = new Error("wrong params, expected: {email, password}");
+      err.status = 400;
+      return next(err);
+    }
+
+    if (!emailValidator.validate(email)) {
+      let err = new Error("email syntax error");
+      err.status = 400;
+      return next(err);
+    }
 
     // Check if password provided for the user is correct
     models.User.findOne({
@@ -67,104 +83,137 @@ module.exports = {
     });
   },
 
-  // TODO: rewrite controllers according to Network Dashboard requirements
+  create: function(req, res, next) {
+    const email = req.body['email'];
+    const nodeName = req.body['nodeName'];
+    const host = req.body['host'];
 
-  // getCurrentUser: function (req, res) {
-  //   models.User.findById(req.user.id).then(user => {
-  //     if (!user) {
-  //       res.status(500).send(responseWrapper('', false, true));
-  //     } else {
-  //       const userResponse = {
-  //         id: user["id"],
-  //         username: user["username"],
-  //       };
-  //       res.status(200).send(responseWrapper(userResponse, true));
-  //     }
-  //   })
-  // },
+    if (!email || !nodeName || !host) {
+      let err = new Error("wrong params, expected: {email, nodeName, host}");
+      err.status = 400;
+      return next(err);
+    }
 
-  // createUser: function (req, res) {
-  //   const username = req.body.username;
-  //   const password = req.body.password;
-  //   if (!username || !password) {
-  //     res.status(400).send(responseWrapper("wrong params, expected: {username, password}"), false);
-  //     return;
-  //   }
-  //   // TODO: validate username and password to meet some requirements
-  //
-  //   // Check if user exists
-  //   models.User.findOne({where: {username: username}}).then(user => {
-  //     if (user) {
-  //       res.status(409).send(responseWrapper("user already exists", false));
-  //     } else {
-  //       bcrypt.hash(password, 10, function (err, hash) {
-  //         if (err) {
-  //           res.status(500).send(responseWrapper('', false, true));
-  //         } else {
-  //           models.User.create({
-  //             username: username,
-  //             password_hash: hash
-  //           }).then(function () {
-  //             res.status(200).send(responseWrapper("user created", true));
-  //           });
-  //         }
-  //       });
-  //     }
-  //   })
-  // },
+    if (!emailValidator.validate(email)) {
+      let err = new Error("wrong email provided");
+      err.status = 400;
+      return next(err);
+    }
 
-  // editUser: function (req, res) {
-  //   //TODO: update regarding the actual user model
-  //   const changeableParams = ['newPassword', 'oldPassword'];
-  //   const newPassword = req.body['newPassword'];
-  //   const oldPassword = req.body['oldPassword'];
-  //
-  //   const requestParamsSetValid = Object.keys(req.body).every(item => changeableParams.includes(item));
-  //   if (!requestParamsSetValid) {
-  //     res.status(400).send(responseWrapper(`wrong params, possible options: [${changeableParams.toString()}]`, false));
-  //     return;
-  //   }
-  //
-  //   // TODO: implement full model PATCH instead
-  //   // TODO: rewrite using bcrypt promises
-  //   if (!(newPassword && oldPassword)) {
-  //     res.status(400).send(responseWrapper(`expected both params: [password, oldPassword]`, false));
-  //   } else {
-  //     models.User.findById(req.user.id).then(user => {
-  //       if (!user) {
-  //         res.status(500).send(responseWrapper('', false, true));
-  //       } else {
-  //         bcrypt.compare(oldPassword, user['password_hash'], function (err, passIsCorrect) {
-  //           if (err) {
-  //             res.status(500).send(responseWrapper('', false, true))
-  //           } else {
-  //             if (!passIsCorrect) {
-  //               res.status(401).send(responseWrapper('old password is incorrect', false));
-  //             } else {
-  //               bcrypt.hash(newPassword, 10, function (err, hash) {
-  //                 if (err) {
-  //                   res.status(500).send(responseWrapper('', false, true));
-  //                 } else {
-  //                   user.update({password_hash: hash}, {fields: ['password_hash']}).then(
-  //                     () => {
-  //                       res.status(200).send(responseWrapper('password changed', false))
-  //                     }
-  //                   ).catch(errors => {
-  //                     console.error(errors);
-  //                     res.status(500).send(responseWrapper('', false, true));
-  //                   })
-  //                 }
-  //               })
-  //             }
-  //           }
-  //         })
-  //       }
-  //     })
-  //     .catch(errors => {
-  //       console.error(errors);
-  //       res.status(500).send(responseWrapper('', false, true));
-  //     });
-  //   }
-  // },
+    return new Promise((resolve, reject) => {
+      models.User.findOne({where: {email: email}}).then(
+        user => {
+          if (user) {
+            resolve(user);
+          } else {
+            models.User.create(
+              {
+                email: email,
+                confirmationToken: randToken.generate(16),
+                isConfirmed: false,
+              }
+            ).then(
+              createdUser => {
+                models.Role.findOne({
+                  where: {
+                    name: 'party'
+                  }
+                }).then(
+                  partyRole => {
+                    createdUser.addRole(partyRole).then(() => {
+                      sendEmail(
+                        {
+                          from: appConfig.emailConfig.from,
+                          to: createdUser.email,
+                          subject: appConfig.emailConfig.notificationSubject,
+                          text: stringTemplate(appConfig.emailConfig.notificationText, {TOKEN: createdUser.confirmationToken}),
+                          html: stringTemplate(appConfig.emailConfig.notificationHTML, {TOKEN: createdUser.confirmationToken}),
+                        }
+                      ).then(
+                        success => {
+                          if (success) {
+                            resolve(createdUser);
+                          } else {
+                            reject("invitation email could not been sent")
+                          }
+                        });
+                    })
+                  }
+                )
+              }
+            )
+          }
+        }
+      );
+    }).then(
+      user => {
+        models.Node.create(
+          models.Node.prepareNodeData(user.id, nodeName, host)
+        ).then(node => {
+          res.status(200).json({node: node});
+        }).catch(error => {
+          if (error.name === "SequelizeUniqueConstraintError") {
+            let err = new Error("Node with name provided already exists");
+            err.status = 409;
+            return next(err);
+          }
+          console.error(error);
+        });
+
+      }
+    )
+
+  },
+
+  confirm: function(req, res, next) {
+    const confirmationToken = req.body['confirmationToken'];
+    const password = req.body['password'];
+
+    if (!confirmationToken || !password) {
+      let err = new Error("wrong params, expected: {confirmationToken, password}");
+      err.status = 400;
+      return next(err);
+    }
+
+    models.User.findAll({where: {confirmationToken: confirmationToken}}).then(result => {
+      if (result.length > 1) {
+        // TODO: slightly change the flow to handle theoretically possible token overlap
+        console.error(`token overlap: ${confirmationToken}`)
+      } else if (result.length < 1) {
+        let err = new Error("Token not found");
+        err.status = 404;
+        return next(err);
+      } else {
+        const user = result[0];
+        user.update(
+          {
+            passwordHash: bcrypt.hashSync(password, 10),
+            confirmationToken: null,
+            isConfirmed: true,
+          },
+          {fields: ['passwordHash', 'confirmationToken', 'isConfirmed']}
+        ).then(user => {
+          let tokenData;
+          try {
+            tokenData = jwtHandler.issue(user);
+          }
+          catch(err) {
+            return next(err);
+          }
+          res.cookie(
+            appConfig.authCookieName,
+            tokenData.token,
+            {
+              domain: appConfig.authCookieDomain,
+              httpOnly: true,
+              secure: appConfig.authCookieSecure,
+              expire: moment(tokenData.expireDate).toDate()
+            }
+          );
+          res.status(200).json({message: "user confirmed successfully"})
+        })
+      }
+    })
+  },
 
 };

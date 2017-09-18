@@ -163,7 +163,8 @@ const initScripts = {
           node.port,
           constellationPort,
           addresses[node.id - 1],
-          publicKey
+          publicKey,
+          true
         )
       });
       models.Node.bulkCreate(nodesDataList).then(res =>
