@@ -1,7 +1,8 @@
-export const ADD_NODE = "ADD_NODE";
-export const ADD_NODE_SUCCESS = "ADD_NODE_SUCCESS";
-export const ADD_NODE_FAILURE = "ADD_NODE_FAILURE";
-export const ADD_NODE_NAVIGATION_SUCCESS = "ADD_NODE_NAVIGATION_SUCCESS";
+export const ADD_NODE = 'ADD_NODE';
+export const ADD_NODE_SUCCESS = 'ADD_NODE_SUCCESS';
+export const ADD_NODE_FAILURE = 'ADD_NODE_FAILURE';
+export const INVITE_SUCCESS = 'INVITE_SUCCESS';
+
 
 export const addNode = function(values) {
   return {
@@ -23,8 +24,8 @@ export const addNodeFailure = function(error) {
   }
 }
 
-export const addNodeNavigationSuccess = function() {
+export const inviteSuccess = function() {
   return {
-    type: ADD_NODE_NAVIGATION_SUCCESS
+    type: INVITE_SUCCESS
   }
 }
