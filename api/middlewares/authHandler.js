@@ -27,7 +27,7 @@ const authHandler = {
    * @returns {{token: String, expireDate: string}}
    */
   issue: function(user) {
-    const expireDate = moment().add(appConfig.jwtValidity, 'days').toISOString();
+    const expireDate = moment().add(appConfig.jwtConfig.jwtValidity, 'days').toISOString();
     const rawToken = {
       exp: expireDate,
       user: {
@@ -40,7 +40,7 @@ const authHandler = {
       throw new Error('Unable to generate valid token');
     }
 
-    const token = jwt.encode(rawToken, appConfig.jwtSecret, appConfig.jwtAlgorithm);
+    const token = jwt.encode(rawToken, appConfig.jwtConfig.jwtSecret, appConfig.jwtConfig.jwtAlgorithm);
 
     return {
       token,
@@ -54,7 +54,7 @@ const authHandler = {
    * @returns {Object}
    */
   getTokenPayload: function(token) {
-    return jwt.decode(token, appConfig.jwtSecret, true, appConfig.jwtAlgorithm);
+    return jwt.decode(token, appConfig.jwtConfig.jwtSecret, true, appConfig.jwtConfig.jwtAlgorithm);
   },
 
   /**
@@ -66,13 +66,13 @@ const authHandler = {
    */
   validateRequest:  function(req, res, next) {
     return function(req, res, next) {
-      const token = req['cookies'][appConfig.authCookieName];
+      const token = req['cookies'][appConfig.jwtConfig.authCookieName];
       if(!token) {
         return unauthorized();
       }
       let decodedToken;
       try {
-        decodedToken = jwt.decode(token, appConfig.jwtSecret, true, appConfig.jwtAlgorithm);
+        decodedToken = jwt.decode(token, appConfig.jwtConfig.jwtSecret, true, appConfig.jwtConfig.jwtAlgorithm);
       }
       catch(err) {
         return unauthorized();

@@ -28,7 +28,7 @@ if (process.env.NODE_ENV !== 'production') {
       if(!origin) {
         callback(null, '*');
       }
-      else if (appConfig.domainWhiteList.indexOf(origin) !== -1) {
+      else if (appConfig.jwtConfig.domainWhiteList.indexOf(origin) !== -1) {
         callback(null, true)
       }
       else {

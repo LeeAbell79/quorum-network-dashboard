@@ -59,12 +59,12 @@ module.exports = {
               }
 
               res.cookie(
-                appConfig.authCookieName,
+                appConfig.jwtConfig.authCookieName,
                 tokenData.token,
                 {
-                  domain: appConfig.authCookieDomain,
+                  domain: appConfig.jwtConfig.authCookieDomain,
                   httpOnly: true,
-                  secure: appConfig.authCookieSecure,
+                  secure: appConfig.jwtConfig.authCookieSecure,
                   expire: moment(tokenData.expireDate).toDate()
                 }
               );
@@ -77,7 +77,7 @@ module.exports = {
   },
 
   logout: function (req, res) {
-    res.clearCookie(appConfig.authCookieName);
+    res.clearCookie(appConfig.jwtConfig.authCookieName);
     res.status(200).json({
       message: 'Logout successful'
     });
@@ -184,13 +184,13 @@ module.exports = {
         const user = result[0];
         user.update(
           {
-            passwordHash: bcrypt.hashSync(password, 10),
+            passwordHash: bcrypt.hashSync(password, appConfig.passwordSaltRounds),
             confirmationToken: null,
             isConfirmed: true,
           },
           {fields: ['passwordHash', 'confirmationToken', 'isConfirmed']}
         ).then(user => {
-          res.clearCookie(appConfig.authCookieName);
+          res.clearCookie(appConfig.jwtConfig.authCookieName);
           res.status(200).json({
             message: 'user confirmed successfully, please re-login'
           });

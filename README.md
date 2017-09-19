@@ -36,9 +36,9 @@ Optional parameters you may provide along with the above:
 #### Advanced configuration
 
 For advanced config check:
- - `backend/quorum-config/` for initial Quorum network configuration
- - `backend/config/app.config.js` for advanced backend configuration (JWT, initial user, SMTP, email texts)
- - `backend/config/config.json`  for advanced database configuration
+ - `api/quorum-config/` for initial Quorum network configuration
+ - `api/config/app.config.js` for advanced api configuration (JWT, initial user, SMTP, email texts)
+ - `api/config/config.json`  for advanced database configuration
  - `docker-compose.yml` for deployment configuration (quorum nodes count etc)
 
 ## Run locally (development-only)
@@ -60,11 +60,11 @@ For advanced config check:
   psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE governance_dev;"
   ```
 
- - Check `backend/config/config.json` for proper postgres cfg (`development` config used by default)
+ - Check `api/config/config.json` for proper postgres cfg (`development` config used by default)
 
- - Run backend server
+ - Run API server
   ```
-  cd network-dashboard/backend
+  cd network-dashboard/api
   npm install
   npm run start:dev
   ```
@@ -75,4 +75,3 @@ For advanced config check:
   npm install
   npm start
   ```
-`TODO: provide backend URL:PORT to UI server (in npm start) (URL may be provided with HOST_NAME`
