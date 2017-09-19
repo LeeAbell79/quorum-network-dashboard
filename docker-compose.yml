@@ -53,7 +53,7 @@ services:
     environment:
       - nodeId=1
       - HOST_IP=${HOST_IP}
-    image: repo.blockapps.net:5000/blockapps/quorum-raft-node
+    image: repo.blockapps.net:5000/blockapps-repo/quorum-node
     ports:
       - 21001:21001
       - 21001:21001/udp
@@ -68,7 +68,7 @@ services:
     environment:
       - nodeId=2
       - HOST_IP=${HOST_IP}
-    image: repo.blockapps.net:5000/blockapps/quorum-raft-node
+    image: repo.blockapps.net:5000/blockapps-repo/quorum-node
     ports:
       - 21002:21002
       - 21002:21002/udp
@@ -83,7 +83,7 @@ services:
     environment:
       - nodeId=3
       - HOST_IP=${HOST_IP}
-    image: repo.blockapps.net:5000/blockapps/quorum-raft-node
+    image: repo.blockapps.net:5000/blockapps-repo/quorum-node
     ports:
       - 21003:21003
       - 21003:21003/udp
