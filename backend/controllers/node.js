@@ -1,3 +1,6 @@
+const Web3 = require('web3');
+
+const appConfig = require('../config/app.config');
 const models = require('../models');
 
 module.exports = {
@@ -72,8 +75,8 @@ module.exports = {
 
     const nodeNotFoundMsg = 'node with id provided was not found';
 
-    // Check if user can change the node
-    // TODO: refactor: the check should be the model class method
+    let nodeToBeUpdated;
+    // Check if user can change the node, get the node
     new Promise((resolve, reject) => {
       models.User.findById(
         req.user.id,
@@ -85,19 +88,16 @@ module.exports = {
           next(new Error('unknown user id'));
         } else {
           const isAdmin = user.Roles.map(roleObj => roleObj.dataValues.name).includes('admin');
-          if (!isAdmin) {
-            models.Node.findById(id).then(node => {
-              if (!node) {
-                let err = new Error(nodeNotFoundMsg);
-                err.status = 404;
-                return next(err);
-              } else {
-                return resolve(node.dataValues.UserId === req.user.id);
-              }
-            });
-          } else {
-            return resolve(true);
-          }
+          models.Node.findById(id).then(node => {
+            if (!node) {
+              let err = new Error(nodeNotFoundMsg);
+              err.status = 404;
+              return next(err);
+            } else {
+              nodeToBeUpdated = node;
+              return resolve(isAdmin || node.dataValues.UserId === req.user.id);
+            }
+          });
         }
       })
     }).then(hasAccess => {
@@ -106,7 +106,8 @@ module.exports = {
         err.status = 403;
         return next(err);
       } else {
-        models.Node.update(
+        const oldStatus = nodeToBeUpdated.dataValues.isVerified;
+        nodeToBeUpdated.update(
           {
             port: port,
             constellationPort: constellationPort,
@@ -114,15 +115,38 @@ module.exports = {
             publicKey: publicKey,
             isVerified: true,
           },
-          {where: {id: id}}
-        ).then(result => {
-          if (result[0] > 0) {
-            res.status(200).json({message: "node updated successfully"})
-          } else {
-            let err = new Error(nodeNotFoundMsg);
-            err.status = 404;
-            return next(err);
+          {
+            fields: ['port', 'constellationPort', 'accountAddress', 'publicKey', 'isVerified'],
+            returning: true,
           }
+        ).then(node => {
+          // if isVerified changed - transfer ether
+          if (!oldStatus && node.dataValues.isVerified) {
+            // TODO: fetch random node with healthy status and do web3 call to it. If error - fetch another and make a call to it, etc...
+            models.Node.findById(1).then(firstNode => {
+              console.log(node, firstNode);
+              const web3HttpProvider = new Web3.providers.HttpProvider(`${firstNode.host}:${firstNode.port}`);
+              const web3 = new Web3(web3HttpProvider);
+              web3.eth.sendTransaction(
+                {
+                  from: firstNode.dataValues.accountAddress,
+                  to: node.dataValues.accountAddress,
+                  value: appConfig.defaultWeiTransfer,
+                },
+                function(err, transactionHash) {
+                  if (!err) {
+                    res.status(200).json({message: "node update and ether transaction were successful", data: {transactionHash: transactionHash}})
+                  } else {
+                    next(err)
+                  }
+                }
+              )
+            });
+          }
+
+        }).catch((err) => {
+          console.error(err.message);
+          return next(new Error(`could not update node with id=${nodeToBeUpdated.id}`));
         });
       }
     });

@@ -3,6 +3,7 @@ const winston = require('winston-color');
 const models = require('../models');
 const Promise = require('bluebird');
 const moment = require('moment');
+const isReachable = require('is-reachable');
 
 winston.info('Starting node-ping with a delay of', process.env.DELAY);
 
@@ -67,29 +68,32 @@ function queryNodes() {
 
 function getNodeStats(node) {
   return new Promise((resolve, reject) => {
-    let isConnected = false;
-    let web3;
     if (node.port) {
       try {
-        winston.info('Connecting to nodeId ' + node.id + ' with host ' + node.host + ' and port ' + node.port);
-        const web3HttpProvider = new Web3.providers.HttpProvider(`${node.host}:${node.port}`);
-        web3 = new Web3(web3HttpProvider);
-
-        // TODO: FIX: setting timeout to HttpProvider does not seem to work for isConnected (hangs for 60 sec if host is unreachable). Ping host before checking health with web3?
-        isConnected = web3.isConnected();
-
-        models.Stat
-          .create({
-            NodeId: node.id,
-            isConnected: isConnected,
-            blockNumber: isConnected ? web3.eth.blockNumber : null,
-            peerCount: isConnected ? web3.net.peerCount : null
-          })
-          .then(resolve)
-          .catch((err) => {
-            winston.error(err.message);
-            resolve();
-          });
+        winston.info(`Connecting to nodeId=${node.id} on ${node.host}:${node.port}`);
+        isReachable(`${node.host}:${node.port}`, {timeout: 2000}).then(reachable => {
+          let isConnected = false;
+          let web3;
+          if (reachable) {
+            const web3HttpProvider = new Web3.providers.HttpProvider(`${node.host}:${node.port}`, 3);
+            web3 = new Web3(web3HttpProvider);
+            isConnected = web3.isConnected();
+          } else {
+            winston.warn(`${node.host}:${node.port} is unreachable (timeout 2sec)`);
+          }
+          models.Stat
+            .create({
+              NodeId: node.id,
+              isConnected: isConnected,
+              blockNumber: isConnected ? web3.eth.blockNumber : null,
+              peerCount: isConnected ? web3.net.peerCount : null
+            })
+            .then(resolve)
+            .catch((err) => {
+              winston.error(err.message);
+              resolve();
+            });
+        })
       }
       catch (err) {
         winston.error(err.message);

@@ -22,6 +22,7 @@
     "debug": "~2.6.3",
     "email-validator": "^1.1.1",
     "express": "~4.15.2",
+    "is-reachable": "^2.3.3",
     "jwt-simple": "^0.5.1",
     "mocha": "^3.5.0",
     "moment": "^2.18.1",

@@ -44,7 +44,7 @@ const initScripts = {
         // Create admin user
         models.User.create({
           email: initialUser.email,
-          passwordHash: bcrypt.hashSync(initialUser.password, 10),
+          passwordHash: bcrypt.hashSync(initialUser.password, appConfig.passwordSaltRounds),
           isConfirmed: true
         }).then(function (adminUser) {
           // get the admin role (can't use createdRoles since they don't have ids at this point)
