@@ -2,5 +2,5 @@
 set -e
 set -x
 
-(cd backend/ && docker build --tag=nd-backend .)
+(cd api/ && docker build --tag=nd-api .)
 (cd ui/ && docker build --tag=nd-ui .)
