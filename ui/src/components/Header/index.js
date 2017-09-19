@@ -4,7 +4,7 @@ import { userLogout } from './../Login/login.actions';
 
 class Header extends Component {
   render() {
-
+    console.log(this.props.login);
     return (
       <nav className="pt-navbar">
         <div className="pt-navbar-group pt-align-left">
@@ -16,6 +16,9 @@ class Header extends Component {
           this.props.login.authenticated
           ?
             <div className="pt-navbar-group pt-align-right">
+              <div>
+                <span className="pt-tag">{this.props.login.user.email} | {this.props.login.user.roles.toString()}</span>
+              </div>
               <button
                 className="pt-button pt-minimal"
                 onClick={(e) => {this.props.userLogout();}}
