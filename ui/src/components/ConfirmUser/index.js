@@ -3,9 +3,15 @@ import { confirmAccount } from './confirmUser.actions';
 import { connect } from 'react-redux';
 import { withRouter, Redirect } from 'react-router-dom';
 import { Field, reduxForm } from 'redux-form';
+import { userLogout } from './../Login/login.actions';
+
 
 // TODO: add a password confirmation field
 class Confirm extends Component {
+
+  componentWillMount() {
+    this.props.userLogout();
+  }
 
   submit = (values) => {
     this.props.confirmAccount(
@@ -86,7 +92,7 @@ function mapStateToProps(state) {
 }
 
 const connected = withRouter(
-  connect(mapStateToProps,{ confirmAccount })(Confirm)
+  connect(mapStateToProps,{ confirmAccount, userLogout })(Confirm)
 );
 
 export default reduxForm({form:'confirmationForm'})(connected);
