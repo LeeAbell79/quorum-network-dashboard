@@ -3,7 +3,7 @@ import {
   CONFIRM_ACCOUNT,
   confirmAccountSuccess,
   confirmAccountFailure
-} from './confirm.actions';
+} from './confirmUser.actions';
 import { env } from '../../env';
 import { handleApiError } from '../../lib/apiErrorHandler';
 
@@ -44,7 +44,6 @@ function* submitConfirmation(action) {
       )
     );
     yield put(confirmAccountSuccess());
-    localStorage.removeItem(env.localStorageKey);
   }
   catch(err) {
     yield put(confirmAccountFailure());
@@ -52,7 +51,7 @@ function* submitConfirmation(action) {
 }
 
 
-export default function* watchConfirmSubmit() {
+export default function* watchConfirmUserSubmit() {
   yield [
     takeLatest(CONFIRM_ACCOUNT, submitConfirmation),
   ]

@@ -15,6 +15,8 @@ router.post('/users/confirm', authController.confirm);
 
 router.get('/nodes', authHandler.validateRequest(), nodeController.list);
 
+router.get('/nodes/:id', authHandler.validateRequest(), nodeController.get);
+
 router.put('/nodes', authHandler.validateRequest(), nodeController.update);
 
 // router.post('/nodes', authHandler.validateRequest(), nodeController.create);

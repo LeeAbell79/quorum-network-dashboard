@@ -2,7 +2,7 @@ import {
   CONFIRM_ACCOUNT,
   CONFIRM_ACCOUNT_SUCCESS,
   CONFIRM_ACCOUNT_FAILURE
-} from './confirm.actions';
+} from './confirmUser.actions';
 
 const initialState = {
   confirmationInProgress: false,

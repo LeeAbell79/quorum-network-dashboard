@@ -7,6 +7,8 @@ module.exports = {
       n.\"id\", \
       n.\"name\", \
       n.\"host\", \
+      n.\"isVerified\", \
+      n.\"UserId\", \
       n.\"accountAddress\", \
       s.\"isConnected\", \
       s.\"peerCount\", \
@@ -32,6 +34,26 @@ module.exports = {
     })
     .catch((err)=>{
       throw err;
+    })
+  },
+
+  get: function(req,res,next) {
+    const id = req.params.id;
+
+    models.Node.findOne({
+      where: {
+        id: id
+      }
+    })
+    .then((node) => {
+      if(!node) {
+        let err = new Error("Not found");
+        err.status = 404;
+        return next(err);
+      }
+      res.status(200).json({
+        node: node
+      });
     })
   },
 

@@ -2,6 +2,7 @@ const Web3 = require('web3');
 const winston = require('winston-color');
 const models = require('../models');
 const Promise = require('bluebird');
+const moment = require('moment');
 
 winston.info('Starting node-ping with a delay of', process.env.DELAY);
 
@@ -16,16 +17,43 @@ setInterval(function() {
     });
 }, process.env.DELAY);
 
+setInterval(function() {
+  winston.info('Cleaning data');
+  cleanup()
+    .then(() => {
+      winston.info('Completed queryNodes');
+    })
+    .catch((err)=>{
+      winston.error(err.message);
+    });
+}, process.env.DELAY);
 
-//TODO: remove Stats entries older than x hours
+// remove Stats entries older than x hours
 function cleanup() {
-
+  return new Promise(function(resolve, reject) {
+    const mDate = moment().subtract(process.env.RETENTION,'hours');
+    models.Stat.destroy({
+      where: {
+        createdAt: {
+          $lt: mDate.toDate()
+        }
+      }
+    })
+    .then(()=>{
+      winston.info('Completed cleanup');
+    })
+    .catch(reject);
+  });
 }
 
 function queryNodes() {
   return new Promise(function(resolve, reject) {
     models.Node
-      .findAll()
+      .findAll({
+        where: {
+          isVerified: true
+        }
+      })
       .then((nodes) => {
         Promise
           .map(nodes, getNodeStats)
@@ -68,7 +96,6 @@ function getNodeStats(node) {
         resolve();
       }
     } else {
-      // TODO: don't create stats for non-verified nodes (change GET /nodes list to output nodes with no stats)
       models.Stat
         .create({
           NodeId: node.id,

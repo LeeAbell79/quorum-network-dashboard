@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { confirmAccount } from './confirm.actions';
+import { confirmAccount } from './confirmUser.actions';
 import { connect } from 'react-redux';
 import { withRouter, Redirect } from 'react-router-dom';
 import { Field, reduxForm } from 'redux-form';
@@ -81,7 +81,7 @@ class Confirm extends Component {
 
 function mapStateToProps(state) {
   return {
-    confirm: state.confirm
+    confirm: state.confirmUser
   };
 }
 
