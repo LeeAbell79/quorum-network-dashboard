@@ -17,25 +17,33 @@ import App from './App/';
 
 import loginReducer from './components/Login/login.reducer';
 import nodeListReducer from './components/NodeList/nodeList.reducer.js';
-import addNodeReducer from './components/AddNode/addNode.reducer.js';
+import inviteReducer from './components/Invite/invite.reducer.js';
+import confirmUserReducer from './components/ConfirmUser/confirmUser.reducer.js';
+import confirmNodeReducer from './components/ConfirmNode/confirmNode.reducer.js';
 
 import watchLoginSubmit from './components/Login/login.saga';
 import watchGetNodeList from './components/NodeList/nodeList.saga';
-import watchNodeSubmit from './components/AddNode/addNode.saga';
+import watchInviteSubmit from './components/Invite/invite.saga';
+import watchConfirmUserSubmit from './components/ConfirmUser/confirmUser.saga';
+import watchConfirmNode from './components/ConfirmNode/confirmNode.saga';
 
 const rootReducer = combineReducers({
   form: formReducer,
   routing: routerReducer,
   login: loginReducer,
   nodeList: nodeListReducer,
-  addNode: addNodeReducer
+  invite: inviteReducer,
+  confirmUser: confirmUserReducer,
+  confirmNode: confirmNodeReducer,
 });
 
 const rootSaga = function* startForeman() {
   yield [
     fork(watchLoginSubmit),
     fork(watchGetNodeList),
-    fork(watchNodeSubmit)
+    fork(watchInviteSubmit),
+    fork(watchConfirmUserSubmit),
+    fork(watchConfirmNode),
   ]
 }
 

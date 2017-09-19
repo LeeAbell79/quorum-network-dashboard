@@ -1,0 +1,45 @@
+{
+  "name": "network-dashboard-api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "npm-run-all -p start-server node-ping",
+    "start-server": "PORT=${PORT:-3001} node $NODE_DEBUG_OPTION ./bin/www",
+    "start-server:dev": "QUORUM_INIT_CONSTELLATION_PORTS=1:9000,2:9001,3:9002 PORT=${PORT:-3001} QUORUM_INIT_HOST=localhost QUORUM_INIT_RPC_PORTS=1:22001,2:22002,3:22003 node $NODE_DEBUG_OPTION ./bin/www",
+    "node-ping": "DELAY=5000 RETENTION=1 node node-ping/index.js",
+    "migrate": "sequelize db:migrate",
+    "test": "NODE_ENV=test mocha",
+    "start:dev": "npm-run-all -p start-server:dev node-ping"
+  },
+  "dependencies": {
+    "bcrypt": "^1.0.2",
+    "bluebird": "^3.5.0",
+    "body-parser": "~1.17.1",
+    "chai": "^4.1.1",
+    "chai-http": "^3.0.0",
+    "cookie-parser": "~1.4.3",
+    "cors": "^2.8.4",
+    "debug": "~2.6.3",
+    "email-validator": "^1.1.1",
+    "express": "~4.15.2",
+    "is-reachable": "^2.3.3",
+    "jwt-simple": "^0.5.1",
+    "mocha": "^3.5.0",
+    "moment": "^2.18.1",
+    "morgan": "~1.8.1",
+    "node-mailer": "^0.1.1",
+    "nodemailer": "^4.1.0",
+    "pg": "^7.2.0",
+    "pg-hstore": "^2.3.2",
+    "rand-token": "^0.3.0",
+    "sequelize": "^4.7.1",
+    "sequelize-cli": "^2.8.0",
+    "serve-favicon": "~2.4.2",
+    "string-template": "^1.0.0",
+    "web3": "0.19.0",
+    "winston-color": "^1.0.0"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.1"
+  }
+}

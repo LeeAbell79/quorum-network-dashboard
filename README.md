@@ -1,47 +1,39 @@
-# network-dashboard
+# Quorum Network Dashboard
 
-WARNING: README may be out-of-date on the development stage
-
-## Run in docker (production-ready)
+## Run in docker
 
 ### Prerequisites
 
  - Docker (1.12+ or 17.04+)
  - Docker-compose
+ NOTE: works the best on Linux and Mac
 
 ### Steps
 
- Login to BlockApps private repo to pull Quorum docker image:
- ```
- docker login repo.blockapps.net:5000
- ```
- `TODO: move image to public repo`
-
-
+1. Get docker registry credentials from BlockApps team via email trial@blockapps.net
+2. Login to BlockApps public registry using the instructions in the email (after you get the email from BlockApps team)
+3. Run the instance:
  ```
  cd network-dashboard/
  ./build-images.sh
  HOST_IP=<HOST_IP> HOST_NAME=<HOST_NAME> QUORUM_INIT_HOST=<QUORUM_INIT_HOST> docker-compose up -d
  ```
  where:
- - `<HOST_IP>` is the broadcasted host machine IP address (**NOT the `localhost`, `127.0.0.1` or `0.0.0.0`**)
- - `<HOST_NAME>` is the host name of the machine (for web browser to access the API from client side). (e.g. for local use only: HOST_NAME=localhost)
- - `<QUORUM_INIT_HOST>` is the host name or IP of the current machine used for Quorum nodes (should be reachable from the internet if external nodes are to be connected to the network)
+ - `<HOST_IP>` is the host machine public IP address (**NOT the `localhost`, `127.0.0.1` or `0.0.0.0`**)
+ - `<HOST_NAME>` is the host name of the machine (for web browser to access the API from client side). (e.g. for local use: HOST_NAME=localhost)
+ - `<QUORUM_INIT_HOST>` is the host name or IP of the host machine used for Quorum nodes (should be reachable from the internet if external nodes are to be connected to the network)
 
 #### Optional parameters
 
 Optional parameters you may provide along with the above:
- - `ADMIN_EMAIL` - the email of the initial admin user
- - `ADMIN_PASSWORD` - the password of the initial admin user (to be changed later in the UI)
- - `PARTY_EMAIL` - the email of the initial party user (demo purpose only)
- - `PARTY_PASSWORD` - the password of the initial party user (demo purpose only)
+ - `ADMIN_PASSWORD` - the password for the initial admin user (default is "admin")
 
 #### Advanced configuration
 
 For advanced config check:
- - `backend/quorum-config/` for initial Quorum network configuration
- - `backend/config/app.config.js` for advanced backend configuration
- - `backend/config/config.json`  for advanced database configuration
+ - `api/quorum-config/` for initial Quorum network configuration (images to be rebuilt after changes made)
+ - `api/config/app.config.js` for advanced api configuration (JWT, initial user, SMTP, email texts) (images to be rebuilt after changes made)
+ - `api/config/config.json`  for advanced database configuration (images to be rebuilt after changes made)
  - `docker-compose.yml` for deployment configuration (quorum nodes count etc)
 
 ## Run locally (development-only)
@@ -63,11 +55,11 @@ For advanced config check:
   psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE governance_dev;"
   ```
 
- - Check `backend/config/config.json` for proper postgres cfg (`development` config used by default)
+ - Check `api/config/config.json` for proper postgres cfg (`development` config used by default)
 
- - Run backend server
+ - Run API server
   ```
-  cd network-dashboard/backend
+  cd network-dashboard/api
   npm install
   npm run start:dev
   ```
@@ -78,4 +70,3 @@ For advanced config check:
   npm install
   npm start
   ```
-`TODO: provide backend URL:PORT to UI server (in npm start) (URL may be provided with HOST_NAME`

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { getNodeList } from './nodeList.actions';
 import { env } from '../../env';
 
@@ -31,6 +32,7 @@ class NodeList extends Component {
             <th>Address</th>
             <th>IP</th>
             <th>Status</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -48,6 +50,15 @@ class NodeList extends Component {
                     : <span className="pt-tag pt-intent-danger">Disconnected</span>
                   }
                   </td>
+                  <td>
+                    {
+                      !node.isVerified && node.UserId ===  this.props.login.user.id
+                      ? <Link to={'/nodes/' + node.id + '/confirm'}>
+                          <button type="button" className="pt-button">Confirm Node</button>
+                        </Link>
+                      : <span></span>
+                    }
+                  </td>
                 </tr>
               );
             })
@@ -60,7 +71,8 @@ class NodeList extends Component {
 
 function mapStateToProps(state) {
   return {
-    nodeList: state.nodeList
+    nodeList: state.nodeList,
+    login: state.login
   };
 }
 
