@@ -18,7 +18,11 @@ class ConfirmNode extends Component {
 
   render() {
 
-    if(this.props.node && this.props.node.UserId !== this.props.login.user.id) {
+    if(
+      (this.props.node && this.props.node.UserId !== this.props.login.user.id)
+      || (this.props.confirmationCompleted && this.props.confirmationSuccessful)
+
+    ) {
       return (<Redirect to={{
           pathname: '/login',
         }} />);
@@ -155,6 +159,8 @@ function mapStateToProps(state) {
   return {
     login: state.login,
     node: state.confirmNode.node,
+    confirmationSuccessful: state.confirmNode.confirmationSuccessful,
+    confirmationCompleted: state.confirmNode.confirmationCompleted
   };
 }
 
