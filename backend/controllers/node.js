@@ -15,7 +15,7 @@ module.exports = {
       s.\"blockNumber\" \
       FROM \
         \"Nodes\" n \
-      JOIN \
+      LEFT OUTER JOIN \
         \"Stats\" s \
       ON \
         s.\"NodeId\" = n.\"id\" \
