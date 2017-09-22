@@ -1,5 +1,9 @@
 # Quorum Network Dashboard
 
+## Network Architecture
+![Network Management Architecture](SampleNetworkArchitecture.png?raw=true "SampleNetworkArchitecture")
+
+
 ## Run in docker
 
 ### Prerequisites
