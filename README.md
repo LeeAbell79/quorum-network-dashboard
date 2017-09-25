@@ -1,4 +1,4 @@
-# Quorum Network Dashboard
+# Quorum Network Management
 
 ## Network Architecture
 ![Network Management Architecture](SampleNetworkArchitecture.png?raw=true "SampleNetworkArchitecture")
