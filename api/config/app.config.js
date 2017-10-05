@@ -17,7 +17,7 @@ module.exports = {
   },
   emailConfig: {
     sendgridUsername: 'apikey',
-    sendgridToken: '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',
+    sendgridToken: '<YOUR_SENDGRID_TOKEN_HERE>',
     from: '"Quorum network" <admin@example.com>',
     notificationSubject: 'Quorum network invitation',
     notificationText: 'Hi,\nYou have been invited to join the Quorum Network: Example Network. If you have not requested to join please ignore this email. If you were expecting this email please visit the link below and follow the onboarding instructions.\nOnboard with the network: http://localhost/#/invite/{TOKEN}\nThe contents of this email are confidential',
