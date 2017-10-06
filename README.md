@@ -1,10 +1,10 @@
 # Quorum Network Management
 
-## Network Architecture
+## Illustrative Network Architecture
 ![Network Management Architecture](SampleNetworkArchitecture.png?raw=true "SampleNetworkArchitecture")
 
 
-## Run in docker
+## Dockerized setup (Run using docker network)
 
 ### Prerequisites
 
@@ -18,7 +18,7 @@
 2. Login to BlockApps public registry using the instructions in the email (after you get the email from BlockApps team)
 3. Run the instance:
  ```
- cd network-dashboard/
+ cd quorum-network-dashboard/
  ./build-images.sh
  HOST_IP=<HOST_IP> HOST_NAME=<HOST_NAME> QUORUM_INIT_HOST=<QUORUM_INIT_HOST> docker-compose up -d
  ```
